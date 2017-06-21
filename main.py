@@ -1,6 +1,6 @@
 import numpy
 import math
-import dill
+import pickle as dill
  
 def numToTimeS(d):
     minute, hour = math.modf(d)
@@ -44,9 +44,9 @@ class Week(object):
 	for day in self.days:
 		times = ""
 		for t in day.timeslots:
-			if t = NULL:
+			if t == NULL:
 				times += "| No Class |"
-			else if t.type != Conflict:
+			elif t.type != Conflict:
 				times += ("| " + t.name + " |") 
 			else:
 				con = ""
@@ -107,6 +107,7 @@ def __main__():
 	except Exception:
 		week = Week()
 		courses = []
+	print "..."
 	viewAll(courses)
 	drawSchedule(week)
 	
