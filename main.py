@@ -28,8 +28,11 @@ class Day (object):
     
     def __init__ (self, name):
         self.name = name
- 
-class Week (object):
+
+class Conflict(object):
+	competitors = []
+	
+class Week(object):
     days = []
     
     def __init__(self):
@@ -43,9 +46,15 @@ class Week (object):
 		for t in day.timeslots:
 			if t = NULL:
 				times += "| No Class |"
-			else:
+			else if t.type != Conflict:
 				times += ("| " + t.name + " |") 
-		str += day.name + "|" + times
+			else:
+				con = ""
+				for c in t.competitors:
+					con += c.name + ";"
+				times += ("| " + "conflict between " + con + " |")
+		str += "| " + day.name + "|" + times
+	return str
 
 def viewAll(courses):
     for c in courses:
@@ -70,11 +79,20 @@ def drawSchedule(week):
 	       " | 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
 	       " | 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM |")
 	print(week)
+	
+def weekToMarkdown(week):
+	mkd = ("| 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
+	       " | 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
+	       " | 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM |" +
+	      "\n | ---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |")
+	return (mkd + week.str())
+	
 # saveSchedule(current_week, all_courses)
 def saveSchedule(week, courses, filename = "data.pkl"):
-	with open(filename, 'wb') as f:
+	with open(filename, 'wb') as f, open("schedule.md", 'w') as mkd:
 		dill.dump(week, f)
 		dill.dump(courses, f)
+		mkd.write(weekToMarkdown(week))
     	
 # returns (week, all_courses)
 def loadSchedule(filename = "data.pkl"):
