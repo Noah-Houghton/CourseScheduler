@@ -47,15 +47,15 @@ class Week(object):
 			times = ""
 			for t in day.timeslots:
 				if t == None:
-					times += "| No Class |"
+					times += " | No Class"
 				elif t.type != Conflict:
-					times += ("| " + t.name + " |") 
+					times += (" | " + t.name) 
 				else:
 					con = ""
 					for c in t.competitors:
 						con += c.name + ";"
-					times += ("| " + "conflict between " + con + " |")
-			str += "| " + day.name + "|" + times
+					times += (" | " + "conflict between " + con )
+			str += " | " + day.name + " | " + times + " |"
 		return str
 
 def viewAll(courses):
@@ -153,7 +153,7 @@ def waitForInput():
 		pass
 	elif action == "View Schedule" or action == "View S" or action == "vs":
 		pass
-	elif action == "Edit Schedule" or action = "Edit S" or action == "es":
+	elif action == "Edit Schedule" or action == "Edit S" or action == "es":
 		pass
 	elif action == "Help" or action == "h":
 		pass
