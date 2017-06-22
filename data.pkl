@@ -1,0 +1,13 @@
+ccopy_reg
+_reconstructor
+p0
+(c__main__
+Week
+p1
+c__builtin__
+object
+p2
+Ntp3
+Rp4
+.(lp0
+.
