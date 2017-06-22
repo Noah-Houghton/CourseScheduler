@@ -1,5 +1,6 @@
 import numpy
 import math
+import ast
 import pickle as dill
  
 def numToTimeS(d):
@@ -17,15 +18,16 @@ class Course (object):
     include = False
     ID = 00000
  
-    def __init__(self, name, start, end, include, ID):
+    def __init__(self, name, days, start, end, include, ID):
         self.name = name
+        self.days = days
         self.start = start
         self.end = end
         self.ID = ID
         self.include = include
  
     def __str__(self):
-        return "Course: " + self.name + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\n"
+        return "Course: " + self.name + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\nID: " + str(self.ID) + "\n" + "Included: " + str(self.include)
  
 class Day (object):
     size = 24
@@ -83,6 +85,7 @@ def removeCourse(courses):
 
 def addCourse(courses):
 	name = raw_input("Name of course: ")
+	days = raw_input("Days of course, separated by ',': ")
 	start = float(raw_input("Start Time of course: "))
 	end = float(raw_input("End Time of course: "))
 	ID = int(raw_input("Course ID: "))
@@ -94,7 +97,7 @@ def addCourse(courses):
 	else:
 		print("bad input & you should feel bad")
 		# TODO: make them go back and change it
-	courses.append(Course(name, start, end, ID, include))
+	courses.append(Course(name, start, end, include, ID))
 
 def viewCourses(courses):
 	for c in courses:
@@ -103,17 +106,70 @@ def viewCourses(courses):
 def include(course):
 	course.include = True
 	
-def notInclude(course):
+def exclude(course):
 	course.include = False
 	
 # TODO: make this modular
-def drawSchedule(week):
+def viewSchedule(week):
 	print("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
 	       " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n")
 	print(week)
-	
+
+def editSInput(week, courses):
+	action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
+	if action == "Include":
+		courseID = raw_input("Input the ID of the course you want to include.")
+		for c in courses:
+			if c.ID == courseID:
+				include(c)
+			else:
+				continue
+	elif action == "Exclude":
+		courseID = raw_input("Input the ID of the course you want to exclude.")
+		for c in courses:
+			if c.ID == courseID:
+				exclude(c)
+			else:
+				continue
+	elif action == "Replace":
+		courseID = raw_input("Input the ID of the course you want to replace.")
+		for c in courses:
+			if c.ID == courseID:
+				exclude(c)
+			else:
+				continue
+		replaceID = raw_input("Now, input the ID of the course you want to replace it with.")
+		for c in courses:
+			if c.ID == replaceID:
+				include(c)
+			else:
+				continue
+	elif action == "Clear":
+		answer = raw_input("Are you sure you want to clear the schedule? This change is irreversible. Y/N")
+		if answer == "Y":
+			print("Clearing...")
+			del week
+			waitForInput(courses, Week())
+		elif answer == "N":
+			editSInput(week, courses)
+		else:
+			print("Did not understand input, returning to edit menu.")
+			editSInput(week, courses)
+	elif action == "Back":
+		waitForInput(courses, week)
+	elif action == "Help":
+		pass
+	else:
+		print("Command not recognized, please try again")
+		editSInput(week, courses)
+
+def editSchedule(week, courses):
+	print("|__ Current Schedule __|")
+	viewSchedule(week)
+	editSInput(week, courses)
+
 def weekToMarkdown(week):
 	mkd = ("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
@@ -143,7 +199,7 @@ def loadSchedule():
 		return (week, courses)
 
 def waitForInput(courses, week):
-	action = raw_input("Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Help\n")
+	action = raw_input("| Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Quit | Help |\n")
 	if action == "Add Course" or action == "Add" or action == "a":
 		addCourse(courses)
 		waitForInput(courses, week)
@@ -152,13 +208,15 @@ def waitForInput(courses, week):
 		waitForInput(courses, week)
 	elif action == "View Courses" or action == "View C" or action == "vc":
 		viewCourses(courses)
+		waitForInput(courses, week)
 	elif action == "Edit Courses" or action == "Edit C" or action == "ec":
 		pass
 	elif action == "View Schedule" or action == "View S" or action == "vs":
-		drawSchedule(week)
+		viewSchedule(week)
 		waitForInput(courses, week)
 	elif action == "Edit Schedule" or action == "Edit S" or action == "es":
-		pass
+		editSchedule(week, courses)
+		waitForInput(courses, week)
 	elif action == "Help" or action == "h":
 		pass
 	elif action == "Quit" or action == "q":
@@ -176,8 +234,9 @@ def main():
 	except Exception:
 		week = Week()
 		courses = []
-		print("No save found, blank save loaded...")
+		print("No save found, blank save created...")
 	waitForInput(courses, week)
+	saveSchedule(week, courses)
 
 if __name__ == "__main__":
     main()
