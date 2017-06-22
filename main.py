@@ -4,7 +4,11 @@ import pickle as dill
  
 def numToTimeS(d):
     minute, hour = math.modf(d)
-    return string(hour) + ":" + string(minute)
+    m = int(minute * 100)
+    if m == 0:
+    	m = "00"
+    r = str(int(hour)) + ":" + str(m)
+    return r
  
 class Course (object):
     name = "default name"
@@ -58,10 +62,6 @@ class Week(object):
 			str += "| " + day.name + times + " |\n"
 		return str
 
-def viewAll(courses):
-    for c in courses:
-        print(c)
-
 def viewSelected(courses):
 	for c in courses:
 		if c.include:
@@ -83,8 +83,8 @@ def removeCourse(courses):
 
 def addCourse(courses):
 	name = raw_input("Name of course: ")
-	start = double(raw_input("Start Time of course: "))
-	end = double(raw_input("End Time of course: "))
+	start = float(raw_input("Start Time of course: "))
+	end = float(raw_input("End Time of course: "))
 	ID = int(raw_input("Course ID: "))
 	include = raw_input("Include in schedule? Y/N")
 	if include == "Y" or include == "y":
@@ -97,7 +97,8 @@ def addCourse(courses):
 	courses.append(Course(name, start, end, ID, include))
 
 def viewCourses(courses):
-	pass
+	for c in courses:
+		print(c)
 
 def include(course):
 	course.include = True
@@ -141,37 +142,42 @@ def loadSchedule():
 		courses = dill.load(f)
 		return (week, courses)
 
-def waitForInput():
-	action = raw_input("Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Help")
-	if action == "Add Course" or action == "Add" or aciton == "a":
-		addCourse()
-		waitForInput()
+def waitForInput(courses, week):
+	action = raw_input("Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Help\n")
+	if action == "Add Course" or action == "Add" or action == "a":
+		addCourse(courses)
+		waitForInput(courses, week)
 	elif action == "Remove Course" or action == "Remove" or action == "r":
-		removeCourse()
-		waitForInput()
+		removeCourse(courses)
+		waitForInput(courses, week)
 	elif action == "View Courses" or action == "View C" or action == "vc":
-		pass
+		viewCourses(courses)
 	elif action == "Edit Courses" or action == "Edit C" or action == "ec":
 		pass
 	elif action == "View Schedule" or action == "View S" or action == "vs":
-		pass
+		drawSchedule(week)
+		waitForInput(courses, week)
 	elif action == "Edit Schedule" or action == "Edit S" or action == "es":
 		pass
 	elif action == "Help" or action == "h":
 		pass
+	elif action == "Quit" or action == "q":
+		print("Exiting...")
+		quit()
+	else:
+		print("Command not recognized. Try again, or enter 'Help' for instructions.")
+		waitForInput(courses, week)
 
 def main():
 	print("Opening save...")
 	try: 
 		week, courses = loadSchedule()
-		print("Save loaded")
+		print("Save loaded...")
 	except Exception:
 		week = Week()
 		courses = []
-		print("No save found, blank save loaded")
-	viewAll(courses)
-	drawSchedule(week)
-	saveSchedule(week, courses)
+		print("No save found, blank save loaded...")
+	waitForInput(courses, week)
 
 if __name__ == "__main__":
     main()
