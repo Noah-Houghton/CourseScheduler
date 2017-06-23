@@ -59,7 +59,7 @@ def updateWeek(courses):
                                         day.timeslots[indx] = src.Conflict(time)
                                         day.timeslots[indx].competitors.append(course)
                                 elif type(time) is src.Conflict:
-                                    if course in time:
+                                    if course in time.competitors:
                                         pass
                                     else:
                                         day.timeslots[indx].competitors.append(course)
