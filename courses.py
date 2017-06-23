@@ -21,7 +21,7 @@ class Course(object):
  
     def __init__(self, name, meetings, start, end, include, ID):
         self.name = name
-        self.meetings = days
+        self.meetings = meetings
         self.start = start
         self.end = end
         self.ID = ID

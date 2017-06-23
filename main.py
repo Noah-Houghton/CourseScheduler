@@ -39,28 +39,29 @@ def addCourse(courses):
 	else:
 		print("bad input & you should feel bad")
 		# TODO: make them go back and change it
-	courses.append(src.Course(name, (days.split(",")), start, end, include, ID))
+	courses.append(src.Course(name,(days.split(",")), start, end, include, ID))
 
 def updateTimeSlots(courses):
     # start with a blank week
-    blank = src.Week()
-    # each day
-    for day in blank.days:
-        # each course
-        for course in courses:
+    wk = src.Week()
+    for course in courses:
+        for day in wk.days:
             # each day course meets
             for meeting in course.meetings:
-                if meeting == day:
+                if meeting == day.name:
                     # check times
                     for indx, time in enumerate(day.timeslots):
                         if indx >= (course.start - 9) * 2 and indx <= (course.end - 9) * 2:
+                            print(indx)
                             if type(time) is src.Course:
-                                time = src.Conflict(time)
-                                time.append(course)
+                                day.timeslots[indx] = src.Conflict(time)
+                                day.timeslots[indx].append(course)
                             elif type(time) is src.Conflict:
-                                time.append(course)
+                                day.timeslots[indx].append(course)
                             else:
-                                time = course
+                                day.timeslots[indx] = course
+                            print(day.name)
+                            print(day.timeslots[indx])
 
 def viewCourses(courses):
     for c in courses:
@@ -82,23 +83,23 @@ def viewSchedule(week, courses):
     print(week)
 
 def editSInput(week, courses):
-	updateTimeSlots(courses)
-	action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
-	if action == "Include":
+    updateTimeSlots(courses)
+    action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
+    if action == "Include":
 		courseID = raw_input("Input the ID of the course you want to include.")
 		for c in courses:
 			if c.ID == courseID:
 				include(c)
 			else:
 				continue
-	elif action == "Exclude":
+    elif action == "Exclude":
 		courseID = raw_input("Input the ID of the course you want to exclude.")
 		for c in courses:
 			if c.ID == courseID:
 				exclude(c)
 			else:
 				continue
-	elif action == "Replace":
+    elif action == "Replace":
 		courseID = raw_input("Input the ID of the course you want to replace.")
 		for c in courses:
 			if c.ID == courseID:
@@ -111,7 +112,7 @@ def editSInput(week, courses):
 				include(c)
 			else:
 				continue
-	elif action == "Clear":
+    elif action == "Clear":
 		answer = raw_input("Are you sure you want to clear the schedule? This change is irreversible. Y/N")
 		if answer == "Y":
 			print("Clearing...")
@@ -122,14 +123,15 @@ def editSInput(week, courses):
 		else:
 			print("Did not understand input, returning to edit menu.")
 			editSInput(week, courses)
-	elif action == "Back":
+    elif action == "Back":
 		waitForInput(courses, week)
-	elif action == "Help":
+    elif action == "Help":
 		pass
-	else:
+    else:
 		print("Command not recognized, please try again")
 		editSInput(week, courses)
-	waitForInput(courses, week)
+    updateTimeSlots(courses)
+    waitForInput(courses, week)
 
 def editSchedule(week, courses):
 	print("|__ Current Schedule __|")
@@ -141,11 +143,11 @@ def weekToMarkdown(week, courses):
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
 	       " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n" +
-	      "| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n")
+           "| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n")
 	return (mkd + str(week))
 	
 # saveCourses(current_week, all_courses)
-def saveCourses(courses):
+def saveCourses(courses, week):
 	dfile = raw_input("Name of data file? For default leave blank.")
 	if dfile == "":
 		dfile = "data"
@@ -190,12 +192,12 @@ def waitForInput(courses, week):
 		pass
 	elif action == "Quit" or action == "q":
 		print("Exiting...")
-		saveCourses(courses)
+		saveCourses(courses, week)
 		quit()
 	elif action == "Save" or action == "s":
 		print("Saving...")
 		try:
-			saveCourses(week, courses)
+			saveCourses(courses, week)
 		except:
 			print("Save unsuccessful")
 			waitForInput(courses, week)
