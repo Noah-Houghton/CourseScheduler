@@ -41,27 +41,25 @@ def addCourse(courses):
 		# TODO: make them go back and change it
 	courses.append(src.Course(name,(days.split(",")), start, end, include, ID))
 
-def updateTimeSlots(courses):
+def updateWeek(courses):
     # start with a blank week
     wk = src.Week()
     for course in courses:
-        for day in wk.days:
-            # each day course meets
+        if course.include:
             for meeting in course.meetings:
-                if meeting == day.name:
-                    # check times
-                    for indx, time in enumerate(day.timeslots):
-                        if indx >= (course.start - 9) * 2 and indx <= (course.end - 9) * 2:
-                            print(indx)
-                            if type(time) is src.Course:
-                                day.timeslots[indx] = src.Conflict(time)
-                                day.timeslots[indx].append(course)
-                            elif type(time) is src.Conflict:
-                                day.timeslots[indx].append(course)
-                            else:
-                                day.timeslots[indx] = course
-                            print(day.name)
-                            print(day.timeslots[indx])
+                for day in wk.days:
+                    if meeting == day.name:
+                        # check times
+                        for indx, time in enumerate(day.timeslots):
+                            if indx >= (course.start - 9) * 2 and indx < (course.end - 9) * 2:
+                                if type(time) is src.Course:
+                                    day.timeslots[indx] = src.Conflict(time)
+                                    day.timeslots[indx].competitors.append(course)
+                                elif type(time) is src.Conflict:
+                                    day.timeslots[indx].competitors.append(course)
+                                else:
+                                    day.timeslots[indx] = course
+    return wk
 
 def viewCourses(courses):
     for c in courses:
@@ -75,15 +73,13 @@ def exclude(course):
 	
 # TODO: make this modular
 def viewSchedule(week, courses):
-    updateTimeSlots(courses)
     print("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
 	       " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n")
-    print(week)
+    print(updateWeek(courses))
 
 def editSInput(week, courses):
-    updateTimeSlots(courses)
     action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
     if action == "Include":
 		courseID = raw_input("Input the ID of the course you want to include.")
@@ -130,8 +126,7 @@ def editSInput(week, courses):
     else:
 		print("Command not recognized, please try again")
 		editSInput(week, courses)
-    updateTimeSlots(courses)
-    waitForInput(courses, week)
+    waitForInput(courses, updateWeek(courses))
 
 def editSchedule(week, courses):
 	print("|__ Current Schedule __|")
@@ -142,8 +137,8 @@ def weekToMarkdown(week, courses):
 	mkd = ("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
-	       " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n" +
-           "| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n")
+	       " 7:30 - 8:00 PM | 8:00 - 8:30 PM | 8:30 - 9:00 PM |\n" +
+           ("| :-------------: " + ("| :-------------: " * 22) + "| :-------------: |\n"))
 	return (mkd + str(week))
 	
 # saveCourses(current_week, all_courses)
@@ -158,7 +153,7 @@ def saveCourses(courses, week):
 		print("Saving data to " + dfile + ".obj")
 		dill.dump(courses, f)
 		print("Saving schedule to " + sfile + ".md")
-		mkd.write(weekToMarkdown(week, courses))
+		mkd.write(weekToMarkdown(updateWeek(courses), courses))
 		f.close()
 		mkd.close()
     	

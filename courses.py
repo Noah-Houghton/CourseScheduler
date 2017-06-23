@@ -33,10 +33,10 @@ class Course(object):
 class Day(object):
     size = 24
     name = "day"
-    timeslots = numpy.empty(size, dtype=object)
     
     def __init__ (self, name):
         self.name = name
+        self.timeslots = numpy.empty(self.size, dtype=object)
 
 class Conflict(object):
 
