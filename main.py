@@ -53,10 +53,16 @@ def updateWeek(courses):
                         for indx, time in enumerate(day.timeslots):
                             if indx >= (course.start - 9) * 2 and indx < (course.end - 9) * 2:
                                 if type(time) is src.Course:
-                                    day.timeslots[indx] = src.Conflict(time)
-                                    day.timeslots[indx].competitors.append(course)
+                                    if time is course:
+                                        pass
+                                    else:
+                                        day.timeslots[indx] = src.Conflict(time)
+                                        day.timeslots[indx].competitors.append(course)
                                 elif type(time) is src.Conflict:
-                                    day.timeslots[indx].competitors.append(course)
+                                    if course in time:
+                                        pass
+                                    else:
+                                        day.timeslots[indx].competitors.append(course)
                                 else:
                                     day.timeslots[indx] = course
     return wk
@@ -135,10 +141,10 @@ def editSchedule(week, courses):
 
 def weekToMarkdown(week, courses):
 	mkd = ("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
-	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
+	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 - 3:00 PM | 3:00 - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
 	       " 7:30 - 8:00 PM | 8:00 - 8:30 PM | 8:30 - 9:00 PM |\n" +
-           ("| :-------------: " + ("| :-------------: " * 22) + "| :-------------: |\n"))
+           ("|:---:" + ("|:---:" * 23) + "|:---:|\n"))
 	return (mkd + str(week))
 	
 # saveCourses(current_week, all_courses)
