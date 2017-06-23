@@ -33,10 +33,12 @@ class Course(object):
 class Day(object):
     size = 24
     name = "day"
+    start = 0.0
     
-    def __init__ (self, name):
+    def __init__ (self, name, start):
         self.name = name
         self.timeslots = numpy.empty(self.size, dtype=object)
+        self.start = start
 
 class Conflict(object):
 
@@ -50,7 +52,7 @@ class Conflict(object):
         return st
 
 class Week(object):
-    days = [Day("Monday"), Day("Tuesday"), Day("Wednesday"), Day("Thursday"), Day("Friday")]
+    days = [Day("Monday", 9), Day("Tuesday", 9), Day("Wednesday", 9), Day("Thursday", 9), Day("Friday", 9)]
 
     def __str__(self):
 		st = ""
@@ -58,7 +60,7 @@ class Week(object):
 			times = ""
 			for t in day.timeslots:
 				if t == None:
-					times += " | No Class"
+					times += " | No Class "
 				elif type(t) is Course:
 					times += (" | " + t.name) 
 				else:

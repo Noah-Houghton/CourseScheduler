@@ -20,26 +20,32 @@ def deleteCourse(course, courses):
 		pass
 
 def removeCourse(courses):
-	ID = int(raw_input("ID of Course to be Deleted: "))
-	for c in courses:
-		if c.ID == ID:
-			deleteCourse(c, courses)
+    ID = int(raw_input("ID of Course to be Deleted: "))
+    for c in courses:
+        if c.ID == ID:
+            deleteCourse(c, courses)
+        return updateWeek(courses)
 
 def addCourse(courses):
-	name = raw_input("Name of course: ")
-	days = raw_input("Days of course, separated by ',': ")
-	start = float(raw_input("Start Time (24H) of course: "))
-	end = float(raw_input("End Time (24H) of course: "))
-	ID = int(raw_input("Course ID: "))
-	include = raw_input("Include in schedule? Y/N")
-	if include == "Y" or include == "y":
-		include = True
-	elif include == "N" or include == "n":
-		include = False
-	else:
-		print("bad input & you should feel bad")
-		# TODO: make them go back and change it
-	courses.append(src.Course(name,(days.split(",")), start, end, include, ID))
+    name = raw_input("Name of course: ")
+    days = raw_input("Days of course, separated by ',': ")
+    start = float(raw_input("Start Time (24H) of course: "))
+    end = float(raw_input("End Time (24H) of course: "))
+    ID = int(raw_input("Course ID: "))
+    for course in courses:
+        # TODO make this loop
+        if course.ID == ID:
+            print("ID already exists, cannot add course. Input new ID: ")
+            ID = int(raw_input("Course ID: "))
+    include = raw_input("Include in schedule? Y/N")
+    if include == "Y" or include == "y":
+        include = True
+    elif include == "N" or include == "n":
+	   include = False
+    else:
+        print("bad input & you should feel bad")
+        # TODO: make them go back and change it
+    courses.append(src.Course(name,(days.split(",")), start, end, include, ID))
 
 def updateWeek(courses):
     # start with a blank week
@@ -77,7 +83,7 @@ def include(course):
 def exclude(course):
 	course.include = False
 	
-# TODO: make this modular
+# TODO: make header modular based on # of timeslots
 def viewSchedule(week, courses):
     print("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
@@ -144,7 +150,7 @@ def weekToMarkdown(week, courses):
 	       " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 - 3:00 PM | 3:00 - 3:30 PM |" +
 	       " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
 	       " 7:30 - 8:00 PM | 8:00 - 8:30 PM | 8:30 - 9:00 PM |\n" +
-           ("|:---:" + ("|:---:" * 23) + "|:---:|\n"))
+           ("|---" + ("|---" * 23) + "|---|\n"))
 	return (mkd + str(week))
 	
 # saveCourses(current_week, all_courses)
@@ -176,8 +182,7 @@ def waitForInput(courses, week):
 		addCourse(courses)
 		waitForInput(courses, week)
 	elif action == "Remove Course" or action == "Remove" or action == "r":
-		removeCourse(courses)
-		waitForInput(courses, week)
+		waitForInput(courses, removeCourse(courses))
 	elif action == "View Courses" or action == "View C" or action == "vc":
 		viewCourses(courses)
 		waitForInput(courses, week)
