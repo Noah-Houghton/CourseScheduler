@@ -1,6 +1,31 @@
 import courses as src
 import ast
 import pickle as dill
+import gui
+
+useGUI = True
+
+# use for stub-code
+def donothing():
+    pass
+
+def coursesToStr(courses):
+    st = ""
+    for c in courses:
+        st += str(c)
+    return st
+
+def scheduleToStr(courses):
+    st = ("| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM |" +
+           " 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 PM - 3:00 PM | 3:00 PM - 3:30 PM |" +
+           " 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM |" +
+           " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n")
+    st += str(updateWeek(courses))
+    return st
+
+def openGUI():
+    app = gui.SchedulerAppGUI()
+    app.mainloop()
 
 def help():
     with open("help.txt", r) as help:
@@ -114,6 +139,7 @@ def viewSchedule(courses):
            " 7:30 - 8:00 PM | 8:00 PM - 8:30 PM | 8:30 - 9:00 PM |\n")
     print(updateWeek(courses))
 
+# for command-line interface
 def editSInput(week, courses):
     action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
     if action == "Include":
@@ -178,6 +204,7 @@ def loadCourses(filename = "data"):
         courses = dill.load(f)
         return courses
 
+# for command-line interface
 def waitForInput(courses, week):
     action = raw_input("| Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Save | Quit | Help |\n")
     if action == "Add Course" or action == "Add" or action == "a":
@@ -222,7 +249,10 @@ def main():
     except:
         courses = []
         print("No save found, blank save created...")
-    waitForInput(courses, week)
+    if useGUI == True:
+        openGUI(courses, week)
+    else:
+        waitForInput(courses, week)
 
 if __name__ == "__main__":
     main()
