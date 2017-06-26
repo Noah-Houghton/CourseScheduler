@@ -1,8 +1,8 @@
 # code adapted from https://stackoverflow.com/questions/7546050/switch-between-two-frames-in-tkinter
-
 import Tkinter as tk     # python 2
 import tkFont as tkfont  # python 2
 import tkMessageBox as tkm
+import tkSimpleDialog as tksd
 import main
 import courses as src
 
@@ -23,7 +23,7 @@ class SchedulerAppGUI(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, CoursePage, SchedulePage):
+        for F in (StartPage, CoursePage, SchedulePage, EditCoursePage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -47,9 +47,7 @@ class SchedulerAppGUI(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-
 class StartPage(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -78,7 +76,14 @@ class AddCoursePage(tk.Frame):
     pass
 
 class EditCoursePage(tk.Frame):
-    pass
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the Edit Course Page", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
 
 class CoursePage(tk.Frame):
 
@@ -90,19 +95,13 @@ class CoursePage(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
-        # each course has its name, professor, time, button to edit, button to delete
-        
-        for ix, course in enumerate(courses):
-            pass
-            # first, partition a spot for the whole object
+        del_button = tk.Button(self, text="Delete Course", command=lambda: self.confirmDelete(tksd.askstring("delete", "ID of course to delete")))
+        del_button.pack()
+        edit_button = tk.Button(self, text="Edit Course", command=lambda: controller.show_frame("EditCoursePage"))
+        edit_button.pack()
 
-            # add content
-            # then, add the buttons to delete and edit
-
-
-    
     def confirmDelete(self, ID):
-        if tkMessageBox.askyesno("del_conf", "Are you sure you want to delete this course? If you do, it cannot be undone (yet)."):
+        if tkm.askyesno("del_conf", "Are you sure you want to delete this course? If you do, it cannot be undone (yet).") == True:
             for c in courses:
                 if c.ID == ID:
                     courses.remove(c)
@@ -119,11 +118,12 @@ class SchedulePage(tk.Frame):
         button.pack()
 
 if __name__ == "__main__":
-    week = src.Week()
-    try:
-        courses = loadCourses()
-    except:
-        courses = []
-        print("No save found, blank schedule created...")
+    # week = src.Week()
+    # try:
+    #     courses = loadCourses()
+    # except:
+    #     courses = []
+    #     print("No save found, blank schedule created...")
+    # main.addCourse(courses)
     app = SchedulerAppGUI()
     app.mainloop()
