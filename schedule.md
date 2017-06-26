@@ -1,7 +1,26 @@
-| Day | 9:00 - 9:30 AM | 9:30 - 10:00 AM | 10:00 - 10:30 AM | 10:30 - 11:00 AM | 11:00 - 11:30 AM | 11:30 AM - 12:00 PM | 12:00 - 12:30 PM | 12:30 - 1:00 PM | 1:00 - 1:30 PM | 1:30 - 2:00 PM | 2:00 - 2:30 PM | 2:30 - 3:00 PM | 3:00 - 3:30 PM | 3:30 - 4:00 PM | 4:00 - 4:30 PM | 4:30 - 5:00 PM | 5:00 - 5:30 PM | 5:30 - 6:00 PM | 6:00 - 6:30 PM | 6:30 - 7:00 PM | 7:00 - 7:30 PM | 7:30 - 8:00 PM | 8:00 - 8:30 PM | 8:30 - 9:00 PM |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Monday | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  |
-| Tuesday | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  |
-| Wednesday | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | History of Literature: Writing History | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  |
-| Thursday | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  |
-| Friday | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | History of Literature: Writing History | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  | No Class  |
+| Time | Monday | Tuesday | Wednesday | Thursday | Friday |
+|---|---|---|---|---|---|
+| 9:00 AM - 9:30 AM| No Class | No Class | No Class | No Class | No Class  |
+| 9:30 AM - 10:00 AM| No Class | No Class | No Class | No Class | No Class  |
+| 10:00 AM - 10:30 AM| No Class | No Class | No Class | No Class | No Class  |
+| 10:30 AM - 11:00 AM| No Class | No Class | No Class | No Class | No Class  |
+| 11:00 AM - 11:30 AM| No Class | No Class | No Class | No Class | No Class  |
+| 11:30 AM - 12:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 12:00 PM - 12:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 12:30 PM - 1:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 1:00 PM - 1:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 1:30 PM - 2:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 2:00 PM - 2:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 2:30 PM - 3:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 3:00 PM - 3:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 3:30 PM - 4:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 4:00 PM - 4:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 4:30 PM - 5:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 5:00 PM - 5:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 5:30 PM - 6:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 6:00 PM - 6:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 6:30 PM - 7:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 7:00 PM - 7:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 7:30 PM - 8:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 8:00 PM - 8:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 8:30 PM - 9:00 PM| No Class | No Class | No Class | No Class | No Class  |

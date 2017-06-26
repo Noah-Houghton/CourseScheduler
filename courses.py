@@ -3,12 +3,20 @@ import math
 
 def numToTimeS(d):
     minute, hr = math.modf(d)
+    am = True
     m = int(minute * 60)
     if m == 0:
         m = "00"
     if hr > 12:
         hr = hr - 12
+        am = False
+    if hr == 12:
+        am = False
     r = str(int(hr)) + ":" + str(m)
+    if am == True:
+        r += " AM"
+    else:
+        r += " PM"
     return r
 
 class Course(object):
@@ -55,18 +63,18 @@ class Week(object):
     days = [Day("Monday", 9), Day("Tuesday", 9), Day("Wednesday", 9), Day("Thursday", 9), Day("Friday", 9)]
 
     def __str__(self):
-		st = ""
-		for day in self.days:
-			times = ""
-			for t in day.timeslots:
-				if t == None:
-					times += " | No Class "
-				elif type(t) is Course:
-					times += (" | " + t.name) 
-				else:
-					con = ""
-					for c in t.competitors:
-						con += c.name + "; "
-					times += (" | " + "conflict between " + con )
-			st += "| " + day.name + times + " |\n"
-		return st
+        st = ""
+        for i in range(len(self.days[0].timeslots)):
+            s = ""
+            for day in self.days:
+                if day.timeslots[i] == None:
+                    s+= "| No Class "
+                elif type(day.timeslots[i]) is Course:
+                    s+="| " + day.timeslots[i].name
+                else: 
+                    con = ""
+                    for c in day.timeslots[i].competitors:
+                        con += c.name + "; "
+                    s+="| conflict between " + con
+            st += "| " + numToTimeS((i*.5) + day.start) + " - " + numToTimeS((i*.5) + .5 + day.start) + s + " |\n"
+        return st

@@ -7,20 +7,7 @@ import main
 import courses as src
 import random, string
 
-def randomword(length):
-   return ''.join(random.choice(string.lowercase) for i in range(length))
-
-def randomday():
-    return [random.choice(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])]
-
-def randomCourse():
-    t = random.randint(12, 18)
-    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000))
-
-def defaultCourses():
-    return [src.Course("Test",["Monday"], 16, 17.5, True, 12345)]
-
-courses = defaultCourses()
+courses = main.getCourses()
 
 class SchedulerAppGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -77,9 +64,9 @@ class StartPage(tk.Frame):
         button2.pack()
 
         self.coursesTxt = tk.StringVar()
-        self.coursesTxt.set(main.coursesToStr(courses))
+        self.coursesTxt.set(main.coursesToStr())
         self.scheduleTxt = tk.StringVar()
-        self.scheduleTxt.set(main.scheduleToStr(courses))
+        self.scheduleTxt.set(main.scheduleToStr())
 
         m1 = tk.PanedWindow(self)
         m1.pack(fill=tk.BOTH, expand=1)
@@ -94,11 +81,10 @@ class StartPage(tk.Frame):
         m2.add(right)
 
     def updateCourses(self):
-        courses.append(randomCourse())
-        self.coursesTxt.set(main.coursesToStr(courses))
+        self.coursesTxt.set(main.coursesToStr())
 
     def updateSchedule(self):
-        self.coursesTxt.set(main.scheduleToStr(courses))
+        self.coursesTxt.set(main.scheduleToStr())
 
     def updateAll(self):
         self.updateCourses()
