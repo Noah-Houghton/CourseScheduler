@@ -23,7 +23,7 @@ class SchedulerAppGUI(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, CoursePage, SchedulePage, EditCoursePage):
+        for F in (StartPage, CoursePage, SchedulePage, EditCoursePage, AddCoursePage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -36,6 +36,10 @@ class SchedulerAppGUI(tk.Tk):
         self.show_frame("StartPage")
 
         menubar = tk.Menu(self)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Save", command=lambda:main.saveCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj"), tksd.askstring("Markdown", "Markdown File Name", initialvalue="schedule.md")))
+        filemenu.add_command(label="Load", command=lambda:main.loadCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj")))
+        menubar.add_cascade(label="File", menu = filemenu)
         viewmenu = tk.Menu(menubar, tearoff=0)
         viewmenu.add_command(label="View Courses", command = lambda: self.show_frame("CoursePage"))
         viewmenu.add_command(label="View Schedule", command = lambda: self.show_frame("SchedulePage"))
@@ -59,9 +63,10 @@ class StartPage(tk.Frame):
                             command=lambda: controller.show_frame("CoursePage"))
         button2 = tk.Button(self, text="Go to Page Two",
                             command=lambda: controller.show_frame("SchedulePage"))
-        update_button = tk.Button(self, text="update page", command = lambda: self.updateAll)
+        button3 = tk.Button(self, text="Go to AddCourse", command=lambda: controller.show_frame("AddCoursePage"))
         button1.pack()
         button2.pack()
+        button3.pack()
 
         self.coursesTxt = tk.StringVar()
         self.coursesTxt.set(main.coursesToStr())
@@ -84,14 +89,62 @@ class StartPage(tk.Frame):
         self.coursesTxt.set(main.coursesToStr())
 
     def updateSchedule(self):
-        self.coursesTxt.set(main.scheduleToStr())
+        self.scheduleTxt.set(main.scheduleToStr())
 
     def updateAll(self):
         self.updateCourses()
         self.updateSchedule()
 
 class AddCoursePage(tk.Frame):
-    pass
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the Add Course Page", font=controller.title_font)
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
+
+        #TODO: have a checkbox for include/exclude and meeting days
+        fields = 'Course Name', 'Course ID', 'Course Meetings', 'Course Start Time', 'Course End Time'
+        self.ents = self.makeform(fields)
+        self.bind('<Return>', (lambda event, e=self.ents: self.fetch(e)))   
+        b1 = tk.Button(self, text='Add Course',
+              command=(lambda e=self.ents: self.fetch(e)))
+        b1.pack(side=tk.LEFT, padx=5, pady=5)
+        b2 = tk.Button(self, text='Quit', command=lambda: self.quit(self.ents))
+        b2.pack(side=tk.LEFT, padx=5, pady=5)
+    
+    def updateAll(self):
+        pass
+
+    def quit(self, entries):
+        for entry in entries:
+            entry[1].delete(0, tk.END)
+        self.controller.show_frame("StartPage")
+
+    def fetch(self, entries):
+        fields = {}
+        for entry in entries:
+            fields[entry[0]] = entry[1].get()
+        # try:
+        c = src.Course(fields["Course Name"], fields["Course Meetings"].split(","), float(fields["Course Start Time"]), float(fields["Course End Time"]), True, int(fields["Course ID"]))
+        courses.append(c)
+        self.quit(self.ents)
+        # except Exception:
+        #     print("Error adding course")
+
+    def makeform(self, fields):
+       entries = []
+       for field in fields:
+          row = tk.Frame(self)
+          lab = tk.Label(row, width=15, text=field, anchor='w')
+          ent = tk.Entry(row)
+          row.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+          lab.pack(side=tk.LEFT)
+          ent.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
+          entries.append((field, ent))
+       return entries
 
 class EditCoursePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -107,7 +160,6 @@ class EditCoursePage(tk.Frame):
         pass
 
 class CoursePage(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller

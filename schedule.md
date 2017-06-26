@@ -10,12 +10,12 @@
 | 12:30 PM - 1:00 PM| No Class | No Class | No Class | No Class | No Class  |
 | 1:00 PM - 1:30 PM| No Class | No Class | No Class | No Class | No Class  |
 | 1:30 PM - 2:00 PM| No Class | No Class | No Class | No Class | No Class  |
-| 2:00 PM - 2:30 PM| No Class | No Class | No Class | No Class | No Class  |
-| 2:30 PM - 3:00 PM| No Class | No Class | No Class | No Class | No Class  |
-| 3:00 PM - 3:30 PM| No Class | No Class | No Class | No Class | No Class  |
-| 3:30 PM - 4:00 PM| No Class | No Class | No Class | No Class | No Class  |
-| 4:00 PM - 4:30 PM| No Class | No Class | No Class | No Class | No Class  |
-| 4:30 PM - 5:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 2:00 PM - 2:30 PM| test| No Class | No Class | No Class | No Class  |
+| 2:30 PM - 3:00 PM| test| No Class | No Class | No Class | No Class  |
+| 3:00 PM - 3:30 PM| test| No Class | No Class | No Class | No Class  |
+| 3:30 PM - 4:00 PM| test| No Class | No Class | No Class | No Class  |
+| 4:00 PM - 4:30 PM| test| No Class | No Class | No Class | No Class  |
+| 4:30 PM - 5:00 PM| test| No Class | No Class | No Class | No Class  |
 | 5:00 PM - 5:30 PM| No Class | No Class | No Class | No Class | No Class  |
 | 5:30 PM - 6:00 PM| No Class | No Class | No Class | No Class | No Class  |
 | 6:00 PM - 6:30 PM| No Class | No Class | No Class | No Class | No Class  |

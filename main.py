@@ -8,6 +8,9 @@ useGUI = True
 
 courses = []
 
+def getCourses():
+    return courses
+
 def randomword(length):
    return ''.join(random.choice(string.lowercase) for i in range(length))
 
@@ -15,20 +18,19 @@ def randomday():
     return [random.choice(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])]
 
 def randomCourse():
-    t = random.randint(12, 18)
+    t = random.randint(9, 21)
     return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000))
 
 def defaultCourses():
-    return [src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345)]
-
-def getCourses():
-    return courses
+    courses = [src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345)]
 
 # use for stub-code
 def donothing():
     pass
 
 def coursesToStr():
+    if len(courses) == 0:
+        return "No Courses Loaded"
     st = ""
     for c in courses:
         st += str(c)
@@ -159,7 +161,7 @@ def viewSchedule():
     print(updateWeek())
 
 # for command-line interface
-def editSInput(week):
+def editSInput():
     action = raw_input("| Include | Exclude | Replace | Clear | Back | Help |")
     if action == "Include":
         include()
@@ -172,101 +174,118 @@ def editSInput(week):
         answer = raw_input("Are you sure you want to clear the schedule? This change is irreversible. Y/N")
         if answer == "Y":
             print("Clearing...")
-            waitForInput(excludeAll(), week)
+            waitForInput(excludeAll())
         elif answer == "N":
-            editSInput(week)
+            editSInput()
         else:
             print("Did not understand input, returning to edit menu.")
-            editSInput(week)
+            editSInput()
     elif action == "Back":
-        waitForInput(week)
+        waitForInput()
     elif action == "Help":
         help()
     else:
         print("Command not recognized, please try again")
-        editSInput(week)
+        editSInput()
     waitForInput(updateWeek())
 
-def editSchedule(week):
+def editSchedule():
     print("|__ Current Schedule __|")
     viewSchedule()
-    editSInput(week)
+    editSInput()
 
-def weekToMarkdown(week):
+def weekToMarkdown():
     mkd = ("| Time | Monday | Tuesday | Wednesday | Thursday | Friday |\n" +
            ("|---" + ("|---" * 4) + "|---|\n"))
     return (mkd + str(updateWeek()))
 
-def saveCourses(week):
+def saveCoursesGUI(dfile, sfile):
+    with open((dfile), 'wb') as f, open((sfile), 'w') as mkd:
+        print("Saving data to " + dfile)
+        dill.dump(courses, f)
+        print("Saving schedule to " + sfile)
+        mkd.write(weekToMarkdown())
+        f.close()
+        mkd.close()
+
+def saveCourses():
     dfile = raw_input("Name of data file? For default leave blank.")
     if dfile == "":
-        dfile = "data"
+        dfile = "data.obj"
     sfile = raw_input("Name of schedule file? For default leave blank.")
     if sfile == "":
-        sfile = "schedule"
-    with open((dfile+".obj"), 'wb') as f, open((sfile+".md"), 'w') as mkd:
+        sfile = "schedule.md"
+    with open((dfile), 'wb') as f, open((sfile), 'w') as mkd:
         print("Saving data to " + dfile + ".obj")
         dill.dump(courses, f)
         print("Saving schedule to " + sfile + ".md")
-        mkd.write(weekToMarkdown(updateWeek()))
+        mkd.write(weekToMarkdown())
         f.close()
         mkd.close()
-        
+
+def loadCoursesGUI(filename):
+    print(filename)
+    try:
+        with open(filename, 'rb') as f:
+            f.seek(0)
+            courses = dill.load(f)
+    except:
+        print("issue loading")
+        courses = defaultCourses()
+
 def loadCourses(filename = "data"):
-    with open((filename+".obj"), 'rb') as f:
-        f.seek(0)
-        courses = dill.load(f)
-        return courses
+    try:
+        with open((filename+".obj"), 'rb') as f:
+            f.seek(0)
+            courses = dill.load(f)
+    except:
+        print("issue loading")
+        courses = defaultCourses()
 
 # for command-line interface
-def waitForInput(week):
+def waitForInput():
     action = raw_input("| Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Save | Quit | Help |\n")
     if action == "Add Course" or action == "Add" or action == "a":
         addCourse()
-        waitForInput(week)
+        waitForInput()
     elif action == "Remove Course" or action == "Remove" or action == "r":
         waitForInput(removeCourse())
     elif action == "View Courses" or action == "View C" or action == "vc":
         viewCourses()
-        waitForInput(week)
+        waitForInput()
     elif action == "Edit Courses" or action == "Edit C" or action == "ec":
         pass
     elif action == "View Schedule" or action == "View S" or action == "vs":
         viewSchedule()
-        waitForInput(week)
+        waitForInput()
     elif action == "Edit Schedule" or action == "Edit S" or action == "es":
-        editSchedule(week)
-        waitForInput(week)
+        editSchedule()
+        waitForInput()
     elif action == "Help" or action == "h":
         pass
     elif action == "Quit" or action == "q":
         print("Exiting...")
-        saveCourses(week)
+        saveCourses()
         quit()
     elif action == "Save" or action == "s":
         print("Saving...")
         try:
-            saveCourses(week)
+            saveCourses()
         except:
             print("Save unsuccessful")
-            waitForInput(week)
+            waitForInput()
         print("Save successful!")
-        waitForInput(week)
+        waitForInput()
     else:
         print("Command not recognized. Try again, or enter 'Help' for instructions.")
-        waitForInput(week)
+        waitForInput()
 
 def main():
-    try:
-        courses = loadCourses()
-        print("Save found, loading...")
-    except:
-        courses = defaultCourses()
-        print("No save found, blank save created...")
+    loadCourses()
     if useGUI == True:
         openGUI()
     else:
-        waitForInput(src.Week())
+        waitForInput()
 
 if __name__ == "__main__":
     main()
