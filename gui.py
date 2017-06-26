@@ -5,11 +5,24 @@ import tkMessageBox as tkm
 import tkSimpleDialog as tksd
 import main
 import courses as src
+import random, string
 
-courses = []
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length))
+
+def randomday():
+    return [random.choice(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])]
+
+def randomCourse():
+    t = random.randint(12, 18)
+    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000))
+
+def defaultCourses():
+    return [src.Course("Test",["Monday"], 16, 17.5, True, 12345)]
+
+courses = defaultCourses()
 
 class SchedulerAppGUI(tk.Tk):
-
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -45,6 +58,7 @@ class SchedulerAppGUI(tk.Tk):
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
+        frame.updateAll()
         frame.tkraise()
 
 class StartPage(tk.Frame):
@@ -58,19 +72,37 @@ class StartPage(tk.Frame):
                             command=lambda: controller.show_frame("CoursePage"))
         button2 = tk.Button(self, text="Go to Page Two",
                             command=lambda: controller.show_frame("SchedulePage"))
+        update_button = tk.Button(self, text="update page", command = lambda: self.updateAll)
         button1.pack()
         button2.pack()
+
+        self.coursesTxt = tk.StringVar()
+        self.coursesTxt.set(main.coursesToStr(courses))
+        self.scheduleTxt = tk.StringVar()
+        self.scheduleTxt.set(main.scheduleToStr(courses))
+
         m1 = tk.PanedWindow(self)
         m1.pack(fill=tk.BOTH, expand=1)
 
-        left = tk.Label(m1, text=main.coursesToStr(courses))
+        left = tk.Label(m1, textvariable=self.coursesTxt)
         m1.add(left)
 
         m2 = tk.PanedWindow(m1, orient=tk.VERTICAL)
         m1.add(m2)
 
-        right = tk.Label(m2, text=main.scheduleToStr(courses))
+        right = tk.Label(m2, textvariable=self.scheduleTxt)
         m2.add(right)
+
+    def updateCourses(self):
+        courses.append(randomCourse())
+        self.coursesTxt.set(main.coursesToStr(courses))
+
+    def updateSchedule(self):
+        self.coursesTxt.set(main.scheduleToStr(courses))
+
+    def updateAll(self):
+        self.updateCourses()
+        self.updateSchedule()
 
 class AddCoursePage(tk.Frame):
     pass
@@ -84,6 +116,9 @@ class EditCoursePage(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
+
+    def updateAll(self):
+        pass
 
 class CoursePage(tk.Frame):
 
@@ -106,6 +141,9 @@ class CoursePage(tk.Frame):
                 if c.ID == ID:
                     courses.remove(c)
 
+    def updateAll(self):
+        pass
+
 class SchedulePage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -116,6 +154,8 @@ class SchedulePage(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
+    def updateAll(self):
+        pass
 
 if __name__ == "__main__":
     # week = src.Week()
