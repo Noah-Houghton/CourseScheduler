@@ -214,3 +214,4 @@ class SchedulePage(tk.Frame):
 if __name__ == "___":
     app = SchedulerAppGUI()
     app.mainloop()
+    

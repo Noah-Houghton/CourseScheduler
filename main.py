@@ -1,9 +1,10 @@
+# contains functions to process and display data from settings after modification by subfile.py functions
+
 import courses as src
 import gui
-import random, string
 import settings, subfile
 
-useGUI = True
+useGUI = False
 
 # use for stub-code
 def donothing():
@@ -38,6 +39,17 @@ def viewSelected():
             print(c)
         else:
             continue
+
+def viewCourses():
+    if len(settings.courses) == 0:
+        print("No Courses")
+    else:
+        for c in settings.courses:
+            print(c)
+
+def viewProfs():
+    for p in settings.professors:
+        print(p)
 
 def updateWeek():
     # start with a blank week
@@ -125,8 +137,20 @@ def weekToMarkdown():
 
 # for command-line interface
 def waitForInput():
-    action = raw_input("| Add Course | Remove Course | View Courses | View Schedule | Edit Schedule | Save | Quit | Help |\n")
-    if action == "Add Course" or action == "Add" or action == "a":
+    action = raw_input("| Random | Reset to Default | Add Professor | Assign Professor | Remove Professor | Add Course | Remove Course | View Courses | View Professors | View Schedule | Edit Schedule | Save | Quit | Help |\n")
+    if action == "Random" or action == "rand":
+        subfile.randomSession()
+        waitForInput()
+    elif action == "Add Professor" or action == "ap":
+        subfile.addProf()
+        waitForInput()
+    elif action == "Assign Professor" or action == "asp":
+        subfile.assignProf()
+        waitForInput()
+    elif action == "Remove Professor" or action == "rp":
+        subfile.deleteProf()
+        waitForInput()
+    elif action == "Add Course" or action == "Add" or action == "a":
         subfile.addCourse()
         waitForInput()
     elif action == "Remove Course" or action == "Remove" or action == "r":
@@ -134,6 +158,9 @@ def waitForInput():
         waitForInput()
     elif action == "View Courses" or action == "View C" or action == "vc":
         viewCourses()
+        waitForInput()
+    elif action == "View Professors" or action == "vp":
+        viewProfs()
         waitForInput()
     elif action == "Edit Courses" or action == "Edit C" or action == "ec":
         pass
@@ -145,6 +172,9 @@ def waitForInput():
         waitForInput()
     elif action == "Help" or action == "h":
         pass
+    elif action == "Reset to Default" or action == "rd":
+        subfile.default()
+        waitForInput()
     elif action == "Quit" or action == "q":
         print("Exiting...")
         subfile.saveCourses()
@@ -165,7 +195,7 @@ def waitForInput():
 def main():
     settings.init()
     subfile.loadCourses()
-    # subfile.defaultCourses()
+    # subfile.default()
     if useGUI == True:
         openGUI()
     else:

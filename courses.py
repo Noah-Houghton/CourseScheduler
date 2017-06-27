@@ -1,3 +1,5 @@
+# contains classes and helper methods to construct and print Courses, Days, and Weeks
+
 import numpy
 import math
 
@@ -20,23 +22,47 @@ def numToTimeS(d):
     return r
 
 class Course(object):
-    name = "default name"
-    start = 0
-    end = 2
-    meetings = []
-    include = False
-    ID = 00000
- 
-    def __init__(self, name, meetings, start, end, include, ID):
+    def __init__(self, name = "default name", meetings = [], start = 0, end = 2, include = False, ID = 00000, profs = None):
         self.name = name
         self.meetings = meetings
         self.start = start
         self.end = end
         self.ID = ID
         self.include = include
+        if profs == None:
+            self.profs = []
+        else:
+            self.profs = profs
  
+    def printProfs(self):
+        st = ""
+        for ix, p in enumerate(self.profs):
+            if ix < len(self.profs) - 2:
+                st += p.name + ", "
+            elif ix < len(self.profs) - 1:
+                st += p.name + ", and "
+            else:
+                st += p.name
+        return st
+
     def __str__(self):
-        return "Course: " + self.name + "\nMeets: " + str(self.meetings) + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\nID: " + str(self.ID) + "\n" + "Included: " + str(self.include) + "\n"
+        return "\nCourse: " + self.name + "\nMeets: " + str(self.meetings) + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\nID: " + str(self.ID) + "\nIncluded: " + str(self.include) + "\nTaught by: " + self.printProfs() + "\n"
+
+    def addProf(self, p):
+        try:
+            self.profs.append(p)
+            if self not in p.courses:
+                p.addCourseDirect(self)
+        except:
+            pass
+
+    def removeProf(self, p):
+        try:
+            self.profs.remove(p)
+            if self in p.courses:
+                p.addCourseDirect(self)
+        except:
+            pass
 
 class Day(object):
     size = 24

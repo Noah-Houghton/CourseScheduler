@@ -1,8 +1,65 @@
+# contains functions to modify data initialized in settings.py
+
+import random, string
 import settings
 import courses as src
+import professors as profs
 import main
 import ast
 import pickle as dill
+
+# def restoreDeleted():
+
+# def undo():
+
+def getProfs(names):
+    profs = []
+    for name in names:
+        for p in settings.professors:
+            if p.name == name:
+                profs.append(p)
+    return profs
+
+def addProfGUI(p):
+    settings.professors.append(p)
+
+def addProf():
+    name = raw_input("Name of professor: ")
+    q = int(raw_input("Q Score: "))
+    dept = raw_input("Department: ")
+    course_ids = raw_input("IDs of Taught Courses: ")
+    cids = course_ids.split(",")
+    courses = []
+    prof = profs.Professor(name, q, dept)
+    for cid in cids:
+        for course in settings.courses:
+            if course.ID == int(cid):
+                prof.addCourseDirectc(course)
+                course.addProf(prof)
+    settings.professors.append(prof)
+
+def deleteProf():
+    name = raw_input("Enter name of prof to delete: ")
+    for p in settings.professors:
+        if p.name == name:
+            print("Removing " + p.name)
+            for c in p.courses:
+                print("removing prof from " + c.name)
+                c.removeProf(p)
+            settings.professors.remove(p)
+        else:
+            pass
+
+def assignProf():
+    name = raw_input("Enter name of prof to assign: ")
+    course = int(raw_input("Enter ID of course to assign to: "))
+    for p in settings.professors:
+        if p.name == name:
+            for c in settings.courses:
+                if c.ID == course:
+                    c.addProf(p)
+                    p.addCourseDirect(c)
+
 
 def getCourses():
     return settings.courses
@@ -15,15 +72,40 @@ def randomday():
 
 def randomCourse():
     t = random.randint(9, 21)
-    settings.courses.append(src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000)))
+    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000))
 
-def defaultCourses():
-    settings.courses = [src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345)]
+def randomProf():
+    t = random.randint(0, 5)
+    subjects = ["History", "Science"]
+    return profs.Professor(randomword(5), t, random.choice(subjects))
+
+def assignRandProf(c):
+    c.addProf(random.choice(settings.professors))
+
+def assignRandCourse(p):
+    p.addCourseDirect(random.choice(settings.courses))
+
+def default():
+    prof = profs.Professor("Jill Lepore", 5, "History")
+    course = src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345, [prof])
+    prof.addCourseDirect(course)
+    settings.courses = [course]
+    settings.professors = [prof]
+
+def randomSession():
+    default()
+    for i in range(3):
+        settings.courses.append(randomCourse())
+    for i in range(3):
+        p = randomProf()
+        assignRandCourse(p)
+        settings.professors.append(p)
 
 def saveCoursesGUI(dfile, sfile):
     with open((dfile), 'wb') as f, open((sfile), 'w') as mkd:
         print("Saving data to " + dfile)
         dill.dump(settings.courses, f)
+        dill.dump(settings.professors, f)
         print("Saving schedule to " + sfile)
         mkd.write(main.weekToMarkdown())
         f.close()
@@ -37,9 +119,10 @@ def saveCourses():
     if sfile == "":
         sfile = "schedule.md"
     with open((dfile), 'wb') as f, open((sfile), 'w') as mkd:
-        print("Saving data to " + dfile + ".obj")
+        print("Saving data to " + dfile)
         dill.dump(settings.courses, f)
-        print("Saving schedule to " + sfile + ".md")
+        dill.dump(settings.professors, f)
+        print("Saving schedule to " + sfile)
         mkd.write(main.weekToMarkdown())
         f.close()
         mkd.close()
@@ -50,9 +133,10 @@ def loadCoursesGUI(filename):
             f.seek(0)
             print("loading " + filename)
             settings.courses = dill.load(f)
+            settings.professors = dill.load(f)
     except:
         print("issue loading, setting to default")
-        defaultCourses()
+        default()
 
 def loadCourses(filename = "data"):
     try:
@@ -60,16 +144,10 @@ def loadCourses(filename = "data"):
             f.seek(0)
             print("loading " + filename)
             settings.courses = dill.load(f)
+            settings.professors = dill.load(f)
     except:
         print("issue loading, setting to default")
-        defaultCourses()
-
-def viewCourses():
-    if len(settings.courses) == 0:
-        print("No Courses")
-    else:
-        for c in settings.courses:
-            print(c)
+        default()
 
 def include():
     courseID = int(raw_input("Input the ID of the course you want to include."))
@@ -87,7 +165,6 @@ def exclude():
 def excludeAll():
     for c in settings.courses:
         c.include = False
-    return courses
 
 def deleteCourse(course):
     try:
@@ -101,21 +178,20 @@ def deleteCourseGUI(ID):
             settings.courses.remove(c)
 
 def removeCourse():
-    settings.courses
     ID = int(raw_input("ID of Course to be Deleted: "))
-    for c in courses:
+    for c in settings.courses:
         if c.ID == ID:
             deleteCourse(c)
     return updateWeek()
 
 def addCourse():
-    settings.courses
     name = raw_input("Name of course: ")
     days = raw_input("Days of course, separated by ',': ")
     start = float(raw_input("Start Time (24H) of course: "))
     end = float(raw_input("End Time (24H) of course: "))
     ID = int(raw_input("Course ID: "))
-    for course in courses:
+    profs = raw_input("Professors who teach this course, separated by ',': ")
+    for course in settings.courses:
         # TODO make this loop
         if course.ID == ID:
             print("ID already exists, cannot add course. Input new ID: ")
@@ -128,7 +204,7 @@ def addCourse():
     else:
         print("bad input & you should feel bad")
         # TODO: make them go back and change it
-    settings.courses.append(src.Course(name,(days.split(",")), start, end, include, ID))
+    settings.courses.append(src.Course(name,(days.split(",")), start, end, include, ID, getProfs(profs.split(","))))
 
 def addCourseGUI(c):
     settings.courses.append(c)
