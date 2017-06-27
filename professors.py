@@ -6,6 +6,8 @@ def coursesNames(courses):
     for ix, c in enumerate(courses):
         if ix < len(courses) - 3:
             st += c.name + ", "
+        elif ix > 0 and len(courses) == 2:
+            st += "and " + c.name
         elif ix < len(courses) - 2:
             st += c.name + ", and "
         else:
@@ -21,6 +23,10 @@ class Professor(object):
             self.courses = []
         else:
             self.courses = courses
+            for c in courses:
+                if self not in c.profs:
+                    c.addProf(self)
+
 
     def addCourseByID(self, ID):
         for course in settings.courses:
@@ -35,7 +41,7 @@ class Professor(object):
             c.addProf(self)
 
     def __str__(self):
-        return ("Prof. "+ self.name + "\nQ Score: " + str(self.q) + "\nDepartment: " + self.department + "\nTeaches: " + coursesNames(self.courses))
+        return ("Prof. "+ self.name + "\nQ Score: " + str(self.q) + "\nDepartment: " + self.department + "\nTeaches: " + coursesNames(self.courses) + "\n")
 
 
 

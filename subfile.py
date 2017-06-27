@@ -38,6 +38,11 @@ def addProf():
                 course.addProf(prof)
     settings.professors.append(prof)
 
+def deleteProfGUI(p):
+    for c in p.courses:
+        c.removeProf(p)
+    settings.professors.remove(p)
+
 def deleteProf():
     name = raw_input("Enter name of prof to delete: ")
     for p in settings.professors:
@@ -72,12 +77,13 @@ def randomday():
 
 def randomCourse():
     t = random.randint(9, 21)
-    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000))
+    q = random.randint(0, 5)
+    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000), q)
 
 def randomProf():
-    t = random.randint(0, 5)
+    q = random.randint(0, 5)
     subjects = ["History", "Science"]
-    return profs.Professor(randomword(5), t, random.choice(subjects))
+    return profs.Professor(randomword(5), q, random.choice(subjects))
 
 def assignRandProf(c):
     c.addProf(random.choice(settings.professors))
@@ -87,7 +93,7 @@ def assignRandCourse(p):
 
 def default():
     prof = profs.Professor("Jill Lepore", 5, "History")
-    course = src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345, [prof])
+    course = src.Course("Test",["Monday", "Wednesday"], 16, 17.5, True, 12345, [prof], 5)
     prof.addCourseDirect(course)
     settings.courses = [course]
     settings.professors = [prof]
@@ -191,6 +197,7 @@ def addCourse():
     end = float(raw_input("End Time (24H) of course: "))
     ID = int(raw_input("Course ID: "))
     profs = raw_input("Professors who teach this course, separated by ',': ")
+    q = int(raw_input("Course Q score: "))
     for course in settings.courses:
         # TODO make this loop
         if course.ID == ID:
@@ -204,7 +211,7 @@ def addCourse():
     else:
         print("bad input & you should feel bad")
         # TODO: make them go back and change it
-    settings.courses.append(src.Course(name,(days.split(",")), start, end, include, ID, getProfs(profs.split(","))))
+    settings.courses.append(src.Course(name,(days.split(",")), start, end, include, ID, getProfs(profs.split(",")), q))
 
 def addCourseGUI(c):
     settings.courses.append(c)

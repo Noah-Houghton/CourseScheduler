@@ -22,7 +22,7 @@ def numToTimeS(d):
     return r
 
 class Course(object):
-    def __init__(self, name = "default name", meetings = [], start = 0, end = 2, include = False, ID = 00000, profs = None):
+    def __init__(self, name = "default name", meetings = [], start = 0, end = 2, include = False, ID = 00000, profs = None, q = 0):
         self.name = name
         self.meetings = meetings
         self.start = start
@@ -33,6 +33,7 @@ class Course(object):
             self.profs = []
         else:
             self.profs = profs
+        self.q = q
  
     def printProfs(self):
         st = ""
@@ -46,7 +47,7 @@ class Course(object):
         return st
 
     def __str__(self):
-        return "\nCourse: " + self.name + "\nMeets: " + str(self.meetings) + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\nID: " + str(self.ID) + "\nIncluded: " + str(self.include) + "\nTaught by: " + self.printProfs() + "\n"
+        return "\nCourse: " + self.name + "\nMeets: " + str(self.meetings) + "\nBegins: " + numToTimeS(self.start) + "\nEnds: " + numToTimeS(self.end) + "\nID: " + str(self.ID) + "\nIncluded: " + str(self.include) + "\nTaught by: " + self.printProfs() + "\nQ Score: " + str(self.q) + "\n"
 
     def addProf(self, p):
         try:

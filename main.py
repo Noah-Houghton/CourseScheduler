@@ -4,7 +4,7 @@ import courses as src
 import gui
 import settings, subfile
 
-useGUI = False
+useGUI = True
 
 # use for stub-code
 def donothing():
@@ -22,6 +22,12 @@ def coursesToStr():
 def scheduleToStr():
     st = ("| Time | Monday | Tuesday | Wednesday | Thursday | Friday |\n")
     st += str(updateWeek())
+    return st
+
+def profsToStr():
+    st = ""
+    for p in settings.professors:
+        st += str(p)
     return st
 
 def openGUI():

@@ -10,17 +10,17 @@
 | 12:30 PM - 1:00 PM| No Class | No Class | No Class | No Class | No Class  |
 | 1:00 PM - 1:30 PM| No Class | No Class | No Class | No Class | No Class  |
 | 1:30 PM - 2:00 PM| No Class | No Class | No Class | No Class | No Class  |
-| 2:00 PM - 2:30 PM| bnfhx| No Class | No Class | No Class | No Class  |
-| 2:30 PM - 3:00 PM| bnfhx| No Class | No Class | No Class | No Class  |
-| 3:00 PM - 3:30 PM| bnfhx| No Class | No Class | No Class | No Class  |
-| 3:30 PM - 4:00 PM| bnfhx| No Class | No Class | No Class | No Class  |
-| 4:00 PM - 4:30 PM| conflict between Test; bnfhx; | No Class | Test| No Class | No Class  |
-| 4:30 PM - 5:00 PM| conflict between Test; bnfhx; | No Class | Test| No Class | No Class  |
+| 2:00 PM - 2:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 2:30 PM - 3:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 3:00 PM - 3:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 3:30 PM - 4:00 PM| No Class | No Class | No Class | No Class | No Class  |
+| 4:00 PM - 4:30 PM| Test| No Class | Test| No Class | No Class  |
+| 4:30 PM - 5:00 PM| Test| No Class | Test| No Class | No Class  |
 | 5:00 PM - 5:30 PM| Test| No Class | Test| No Class | No Class  |
 | 5:30 PM - 6:00 PM| No Class | No Class | No Class | No Class | No Class  |
 | 6:00 PM - 6:30 PM| No Class | No Class | No Class | No Class | No Class  |
 | 6:30 PM - 7:00 PM| No Class | No Class | No Class | No Class | No Class  |
 | 7:00 PM - 7:30 PM| No Class | No Class | No Class | No Class | No Class  |
 | 7:30 PM - 8:00 PM| No Class | No Class | No Class | No Class | No Class  |
-| 8:00 PM - 8:30 PM| No Class | ewdcl| No Class | No Class | No Class  |
-| 8:30 PM - 9:00 PM| No Class | ewdcl| No Class | No Class | No Class  |
+| 8:00 PM - 8:30 PM| No Class | No Class | No Class | No Class | No Class  |
+| 8:30 PM - 9:00 PM| No Class | No Class | No Class | No Class | No Class  |
