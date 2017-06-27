@@ -3,11 +3,9 @@ import Tkinter as tk     # python 2
 import tkFont as tkfont  # python 2
 import tkMessageBox as tkm
 import tkSimpleDialog as tksd
-import main
+import main, subfile, settings
 import courses as src
 import random, string
-
-courses = main.getCourses()
 
 class SchedulerAppGUI(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -37,14 +35,20 @@ class SchedulerAppGUI(tk.Tk):
 
         menubar = tk.Menu(self)
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Save", command=lambda:main.saveCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj"), tksd.askstring("Markdown", "Markdown File Name", initialvalue="schedule.md")))
-        filemenu.add_command(label="Load", command=lambda:main.loadCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj")))
+        filemenu.add_command(label="Save", command=lambda: subfile.saveCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj"), tksd.askstring("Markdown", "Markdown File Name", initialvalue="schedule.md")))
+        filemenu.add_command(label="Load", command=lambda: self.loadCourses())
         menubar.add_cascade(label="File", menu = filemenu)
         viewmenu = tk.Menu(menubar, tearoff=0)
+        viewmenu.add_command(label="Home", command = lambda: self.show_frame("StartPage"))
         viewmenu.add_command(label="View Courses", command = lambda: self.show_frame("CoursePage"))
         viewmenu.add_command(label="View Schedule", command = lambda: self.show_frame("SchedulePage"))
         menubar.add_cascade(label = "View", menu=viewmenu)
         self.config(menu = menubar)
+
+    def loadCourses(self):
+        subfile.loadCoursesGUI(tksd.askstring("Data", "Data File Name", initialvalue="data.obj"))
+        print("reloading page")
+        self.show_frame("StartPage")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -59,9 +63,9 @@ class StartPage(tk.Frame):
         label = tk.Label(self, text="This is the start page", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Go to Page One",
+        button1 = tk.Button(self, text="Go to Courses",
                             command=lambda: controller.show_frame("CoursePage"))
-        button2 = tk.Button(self, text="Go to Page Two",
+        button2 = tk.Button(self, text="Go to Schedule",
                             command=lambda: controller.show_frame("SchedulePage"))
         button3 = tk.Button(self, text="Go to AddCourse", command=lambda: controller.show_frame("AddCoursePage"))
         button1.pack()
@@ -128,8 +132,7 @@ class AddCoursePage(tk.Frame):
         for entry in entries:
             fields[entry[0]] = entry[1].get()
         # try:
-        c = src.Course(fields["Course Name"], fields["Course Meetings"].split(","), float(fields["Course Start Time"]), float(fields["Course End Time"]), True, int(fields["Course ID"]))
-        courses.append(c)
+        subfile.addCourseGUI(src.Course(fields["Course Name"], fields["Course Meetings"].split(","), float(fields["Course Start Time"]), float(fields["Course End Time"]), True, int(fields["Course ID"])))
         self.quit(self.ents)
         # except Exception:
         #     print("Error adding course")
@@ -155,6 +158,8 @@ class EditCoursePage(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
+        m1 = tk.PanedWindow(self)
+        m1.pack(fill=tk.BOTH, expand=1)
 
     def updateAll(self):
         pass
@@ -168,19 +173,30 @@ class CoursePage(tk.Frame):
         button = tk.Button(self, text="Go to the start page",
                            command=lambda: controller.show_frame("StartPage"))
         button.pack()
-        del_button = tk.Button(self, text="Delete Course", command=lambda: self.confirmDelete(tksd.askstring("delete", "ID of course to delete")))
+        del_button = tk.Button(self, text="Delete Course", command=lambda: self.confirmDelete(int(tksd.askstring("delete", "ID of course to delete"))))
         del_button.pack()
         edit_button = tk.Button(self, text="Edit Course", command=lambda: controller.show_frame("EditCoursePage"))
         edit_button.pack()
+        add_button = tk.Button(self, text="Add Course", command=lambda: controller.show_frame("AddCoursePage"))
+        add_button.pack()
+        m1 = tk.PanedWindow(self)
+        m1.pack(fill=tk.BOTH, expand=1)
+        self.coursesTxt = tk.StringVar()
+        self.coursesTxt.set(main.coursesToStr())
+        display = tk.Label(m1, textvariable = self.coursesTxt)
+        m1.add(display)
 
     def confirmDelete(self, ID):
         if tkm.askyesno("del_conf", "Are you sure you want to delete this course? If you do, it cannot be undone (yet).") == True:
-            for c in courses:
+            for c in settings.courses:
                 if c.ID == ID:
-                    courses.remove(c)
+                    subfile.deleteCourse(c)
+
+    def updateCourses(self):
+        self.coursesTxt.set(main.coursesToStr())
 
     def updateAll(self):
-        pass
+        self.updateCourses()
 
 class SchedulePage(tk.Frame):
 
@@ -195,13 +211,6 @@ class SchedulePage(tk.Frame):
     def updateAll(self):
         pass
 
-if __name__ == "__main__":
-    # week = src.Week()
-    # try:
-    #     courses = loadCourses()
-    # except:
-    #     courses = []
-    #     print("No save found, blank schedule created...")
-    # main.addCourse(courses)
+if __name__ == "___":
     app = SchedulerAppGUI()
     app.mainloop()

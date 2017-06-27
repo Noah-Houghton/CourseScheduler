@@ -60,7 +60,8 @@ class Conflict(object):
         return st
 
 class Week(object):
-    days = [Day("Monday", 9), Day("Tuesday", 9), Day("Wednesday", 9), Day("Thursday", 9), Day("Friday", 9)]
+    def __init__(self):
+        self.days = [Day("Monday", 9), Day("Tuesday", 9), Day("Wednesday", 9), Day("Thursday", 9), Day("Friday", 9)]
 
     def __str__(self):
         st = ""
