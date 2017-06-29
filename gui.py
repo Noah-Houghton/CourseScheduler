@@ -1,6 +1,8 @@
-# code adapted from https://stackoverflow.com/questions/7546050/switch-between-two-frames-in-tkinter
-import Tkinter as tk     # python 2
-import tkFont as tkfont  # python 2
+# pages code adapted from https://stackoverflow.com/questions/7546050/switch-between-two-frames-in-tkinter
+# form code adapted from http://www.python-course.eu/tkinter_entry_widgets.php
+
+import Tkinter as tk
+import tkFont as tkfont
 import tkMessageBox as tkm
 import tkSimpleDialog as tksd
 import main, subfile, settings
@@ -39,8 +41,13 @@ class SchedulerAppGUI(tk.Tk):
         filemenu.add_command(label="Save", command=lambda: subfile.saveCoursesGUI(tksd.askstring("Saving Data", "Data File Name", initialvalue="data.obj"), tksd.askstring("Writing Markdown", "Markdown File Name", initialvalue="schedule.md")))
         filemenu.add_command(label="Load", command=lambda: self.loadCourses())
         filemenu.add_command(label="Reset to Default", command=lambda: self.confirmReset())
-        filemenu.add_command(label="Random Session", command=lambda: self.confirmRandom())
+        debugmenu = tk.Menu(filemenu, tearoff=0)
+        debugmenu.add_command(label="Random Session", command=lambda: self.confirmRandom())
+        filemenu.add_cascade(label="Debug", menu = debugmenu)
         menubar.add_cascade(label="File", menu = filemenu)
+        editmenu = tk.Menu(menubar, tearpff=0)
+        editmenu.add_command(label="Undo", command=lambda: self.Undo())
+        menubar.add_cascade(label="Edit", menu=filemenu)
         viewmenu = tk.Menu(menubar, tearoff=0)
         viewmenu.add_command(label="Home", command = lambda: self.show_frame("StartPage"))
         viewmenu.add_command(label="View Courses", command = lambda: self.show_frame("CoursePage"))
@@ -48,6 +55,11 @@ class SchedulerAppGUI(tk.Tk):
         viewmenu.add_command(label="View Professors", command = lambda: self.show_frame("ProfsPage"))
         menubar.add_cascade(label = "View", menu=viewmenu)
         self.config(menu = menubar)
+
+    def undo(self):
+        subfile.undo()
+        print("reloading -- currently this sets page to startpage")
+        self.show_frame("StartPage")
 
     def confirmRandom(self):
         if tkm.askyesno("Verification", "Are you sure you want to make a random session?") == True:

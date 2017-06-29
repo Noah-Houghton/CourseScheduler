@@ -8,9 +8,26 @@ import main
 import ast
 import pickle as dill
 
-# def restoreDeleted():
-
-# def undo():
+def undo():
+    if settings.lastAction == "Delete":
+        restore = settings.deleted[-1]
+        settings.deleted.remove(restore)
+        if type(restore) is courses.Course:
+            # error: if professor has been deleted and is still deleted when this is restored
+            # TODO enforce professors cleanup
+            settings.courses.append(restore)
+        elif type(restore) is professors.Professor:
+            # error if a course has been deleted...
+            # TODO enforce courses cleanup
+            settings.professors.append(restore)
+        else
+            pass
+    elif settings.lastAction == "Add":
+        pass
+    elif settings.lastAction == "Edit":
+        pass
+    else:
+        pass
 
 def getProfs(names):
     profs = []
@@ -34,7 +51,7 @@ def addProf():
     for cid in cids:
         for course in settings.courses:
             if course.ID == int(cid):
-                prof.addCourseDirectc(course)
+                prof.addCourseDirect(course)
                 course.addProf(prof)
     settings.professors.append(prof)
 
@@ -42,6 +59,7 @@ def deleteProfGUI(p):
     for c in p.courses:
         c.removeProf(p)
     settings.professors.remove(p)
+    settings.deleted.append(p)
 
 def deleteProf():
     name = raw_input("Enter name of prof to delete: ")
@@ -52,6 +70,7 @@ def deleteProf():
                 print("removing prof from " + c.name)
                 c.removeProf(p)
             settings.professors.remove(p)
+            settings.deleted.append(p)
         else:
             pass
 
@@ -78,7 +97,7 @@ def randomday():
 def randomCourse():
     t = random.randint(9, 21)
     q = random.randint(0, 5)
-    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000), q)
+    return src.Course(randomword(5), randomday(), t, t+3, True, random.randint(0, 50000), [], q)
 
 def randomProf():
     q = random.randint(0, 5)
@@ -175,6 +194,7 @@ def excludeAll():
 def deleteCourse(course):
     try:
         settings.courses.remove(course)
+        settings.deleted.append(course)
     except:
         pass
 
@@ -182,6 +202,7 @@ def deleteCourseGUI(ID):
     for c in settings.courses:
         if c.ID == ID:
             settings.courses.remove(c)
+            settings.deleted.append(c)
 
 def removeCourse():
     ID = int(raw_input("ID of Course to be Deleted: "))

@@ -21,6 +21,46 @@ def numToTimeS(d):
         r += " PM"
     return r
 
+# TODO
+# courses can be...
+# lecture with section
+# seminar
+
+# class Course(object):
+    # requirement fulfilled
+    # # of credits
+    # name
+    # id
+    # include
+    # professors
+    # q
+    # location
+    # semester
+
+# lecture courses...
+# can have meetings which are different for section and lecture
+
+# class Lecture(Course):
+    # Times
+        # Times[0] = lecture times
+            # days
+            # time start
+            # time end
+        # Times[1] = section times
+            # days
+            # time start
+            # time end
+
+# seminars...
+# only have constant meetings
+
+
+# class Seminar(Course):
+    # days
+    # time start
+    # time end
+
+
 class Course(object):
     def __init__(self, name = "default name", meetings = [], start = 0, end = 2, include = False, ID = 00000, profs = None, q = 0):
         self.name = name

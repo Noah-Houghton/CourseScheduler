@@ -42,16 +42,3 @@ class Professor(object):
 
     def __str__(self):
         return ("Prof. "+ self.name + "\nQ Score: " + str(self.q) + "\nDepartment: " + self.department + "\nTeaches: " + coursesNames(self.courses) + "\n")
-
-
-
-    # professors have...
-    # a name
-    # a q score
-    # a department
-    # courses they teach
-
-
-    # object should be...
-    # independent of the Course object so that Profs/Courses can be switched out/deleted without collapsing the system
-        # so a Prof is associated with a Course and vice versa, but not as a required part of the constructor (optional)
