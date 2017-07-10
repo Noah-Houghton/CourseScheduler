@@ -45,7 +45,7 @@ class SchedulerAppGUI(tk.Tk):
         debugmenu.add_command(label="Random Session", command=lambda: self.confirmRandom())
         filemenu.add_cascade(label="Debug", menu = debugmenu)
         menubar.add_cascade(label="File", menu = filemenu)
-        editmenu = tk.Menu(menubar, tearpff=0)
+        editmenu = tk.Menu(menubar, tearoff=0)
         editmenu.add_command(label="Undo", command=lambda: self.Undo())
         menubar.add_cascade(label="Edit", menu=filemenu)
         viewmenu = tk.Menu(menubar, tearoff=0)

@@ -20,7 +20,7 @@ def undo():
             # error if a course has been deleted...
             # TODO enforce courses cleanup
             settings.professors.append(restore)
-        else
+        else:
             pass
     elif settings.lastAction == "Add":
         pass
