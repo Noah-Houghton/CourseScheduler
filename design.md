@@ -15,7 +15,7 @@ The backend is written in Python. It must handle requests for all loaded courses
 * isSection
 * isSeminar
 * department
-* # credits
+* number of credits
 * credit type
 * Q Score
 
