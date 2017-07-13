@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+    {% block title %}
+    Home
+    {% endblock %}
+        {% block headerAdd %}
+        <!--HTML Styling and template taken and/or inspired from https://www.youtube.com/watch?v=gqOEoUR5RHg by Derek Banas-->
+        <style type="text/css">
+        body{
+                font-size: 200%;
+                font-family: arial, sans-serif;
+            }
+            #nttLogo{
+                height: 100px;
+                width: 100px;
+            }
+            #websiteTitle{
+                font-size: 10em;
+                vertical-align: middle;
+                font-family: 'Anton';
+                padding-left: 15px;
+                color: #E04321;
+            }
+            #websiteSlogan{
+                font-size: 5.4em;
+            }
+            /* Carousel Styling */
+            .slide1{
+                background-image: url('http://media.salon.com/2014/01/great_gatsby-1280x750.jpg');
+                height: 650px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+
+            }
+            .slide2{
+                background-image: url('https://s-media-cache-ak0.pinimg.com/564x/2a/31/40/2a31408b02f2ce56c8de517f0e2bdc5a.jpg');
+                height: 650px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            .slide3{
+                background-image: url('http://vignette1.wikia.nocookie.net/spongebob/images/8/87/F.U.N..jpg/revision/latest?cb=20121029010153');
+                height: 650px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            .slide4{
+                background-image: url('http://www.pxleyes.com/images/contests/pottery/fullsize/---------------------------------------------4d586116a2fea_hires.jpg');
+                height: 650px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            .slide5{
+                background-image: url('http://magazine.ucla.edu/depts/lifesigns/lifesignsbooks-toppage.jpg');
+                height: 650px;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            .carousel-caption h1{
+                font-size: 5.4em;
+                font-family: 'Pacifico', cursive;
+                padding-bottom: .4em;
+                color: #ffffff;
+            }
+            .carousel-caption p{
+                font-size: 2em;
+                color: #ffffff;
+            }
+        </style>
+        {% endblock %}
+{% block main %}
+    <!-- Carousel
+    Carousel help from http://www.w3schools.com/bootstrap/bootstrap_carousel.asp
+    and https://getbootstrap.com/-->
+    <!-- Surround everything with a div with the class carousel slide -->
+    <div id="HomePage" class="carousel slide" data-ride="carousel">
+        
+        <!-- Define how many slides to put in the carousel -->
+        <ol class="carousel-indicators">
+            <li data-target="#HomePage" data-slide-to="0" class="active"> </li >
+            <li data-target="#HomePage" data-slide-to="1"> </li>
+            <li data-target ="#HomePage" data-slide-to="2"> </li>
+            <li data-target ="#HomePage" data-slide-to="3"> </li>
+            <li data-target ="#HomePage" data-slide-to="4"> </li>
+        </ol >
+        
+        <!-- Define the text to place over the image, each slide is addressed in div class="carousel-inner"  -->
+        <div class="carousel-inner">
+            <div class="item active" >
+                <div class ="slide1"></div>
+                <div class="carousel-caption">
+                    <h1>Free</h1>
+                    <p>These come free as a member of the Harvard family</p>
+                    <p><a href="{{ url_for('free') }}" class="btn btn-primary btn-sm">Search for Free</a></p>
+                </div>
+            </div>
+            
+            <div class="item">
+                <div class="slide2"></div>
+                <div class="carousel-caption">
+                    <h1>Sports</h1>
+                    <p>Super athletes to casual fun meetups</p>
+                    <p><a href="{{ url_for('sports') }}" class="btn btn-primary btn-sm">Search for Sports</a></p>
+                </div>
+            </div>
+            
+            <div class="item">
+                <div class="slide3"></div>
+                <div class="carousel-caption">
+                    <h1>Fun</h1>
+                    <p>Social events, parties, and more</p>
+                    <p><a href="{{ url_for('fun') }}" class="btn btn-primary btn-sm">Search for Fun</a></p>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="slide4"></div>
+                <div class="carousel-caption">
+                    <h1>Non-Academic</h1>
+                    <p>Not For Credit and might be exactly what you're looking for.  
+                    Guaranteed to make you a genius.</p>
+                    <p><a href="{{ url_for('nonacademic') }}" class="btn btn-primary btn-sm">Search for Non-Academic</a></p>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="slide5"></div>
+                <div class="carousel-caption">
+                    <h1>Academic</h1>
+                    <p>I love learning</p>
+                    <p><a href="{{ url_for('academic') }}" class="btn btn-primary btn-sm">Search for Academic</a></p>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- Set the actions to take when the arrows are clicked -->
+        <a class="left carousel-control" href="#HomePage" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"> </span>
+        </a>
+        <a class="right carousel-control" href="#HomePage" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+{% endblock %}
