@@ -30,3 +30,11 @@ Provides methods for adding, deleting, and editing courses in courses.db.
 
 ### professors.py
 Provides methods for adding, deleting, and editing professors in professors.db.
+
+### concentrations.db
+
+### secondaries.db
+
+### languages.db
+
+### students.db
