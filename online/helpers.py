@@ -3,17 +3,8 @@ from functools import wraps
 import SQL
 import urllib.parse
 
-cdb = SQL("sqlite:///courses.db")
+crs_db = SQL("sqlite:///courses.db")
 
-# modified from http://stackoverflow.com/questions/9890364/combine-two-dictionaries-and-remove-duplicates-in-python
-# combines two dicts into one in which only matching entries are placed
-def combineDicts(lis1, lis2):
-    lis3 = []
-    for aLis1 in lis1:
-        if aLis1 in lis2:
-            lis3.append(aLis1)
-    return lis3
-    
 def lookup(query, keys):
     """Looks up entries based on keywords and/or content string"""
     # if no keyword provided, allow all
@@ -109,14 +100,6 @@ def escape(s):
 def delete(uname):
     # delete user
     db.execute("DELETE FROM users WHERE username = :name", name = uname)
-    
-def changeSubmit(b, uname):
-    # if b is true, box was checked
-    if b:
-        db.execute("UPDATE users SET canSubmit = 'True' WHERE username = :name", name = uname)
-    # if b is false, box was not checked
-    else:
-        db.execute("UPDATE users SET canSubmit = 'False' WHERE username = :name", name = uname)
 
 def changeAdmin(b, uname):
     # if b is true, box was checked
