@@ -1,48 +1,106 @@
 from flask import redirect, render_template, request, session, url_for
 from functools import wraps
-import SQL
-import urllib.parse
+import sqlite3
+import urlparse
+import json
 
-crs_db = SQL("sqlite:///courses.db")
+crs_db = sqlite3.connect("courses.db")
+prof_db = sqlite3.connect("professors.db")
+COS_db = sqlite3.connect("concentrations.db")
+snd_db = sqlite3.connect("secondaries.db")
+lng_db = sqlite3.connect("languages.db")
+sctn_db = sqlite3.connect("sections.db")
+# active courses are stored as a jsonified list of course ids which must be looked up in crs_db
+# gened requirements stored as a jsonified dict
+std_db = sqlite3.connect("students.db")
 
-def lookup(query, keys):
-    """Looks up entries based on keywords and/or content string"""
-    # if no keyword provided, allow all
-    ids = []
-    if keys:
-        keywords = keys.split(";")
-        print("keyword list: ", end="")
-        print(keywords)
-        for word in keywords:
-            rows = db.execute("SELECT ids FROM keywords WHERE keyword LIKE :key", key = '%' + word + '%')
-            if rows:
-                sql_ids = rows[0]["ids"]
-                posts = sql_ids.split(";")
-                for i in posts:
-                    ids.append(int(i))
-    if ids:
-            sql_query = 'SELECT * FROM content WHERE ' + ' OR '.join(('id = ' + str(n) for n in ids))
-            rows = db.execute(sql_query)
-            if not rows:
-                rows = db.execute("SELECT * FROM content WHERE id=:pid AND canRead = 'True'", pid = ids[0])
-    
-    if query:
-        # search database content for query
-        rows2 = db.execute("SELECT * FROM content WHERE (content LIKE :content OR title LIKE :title) AND canRead = 'True'", content = '%' + query + '%', title = '%' + query + '%')
-    #return items that match word AND keywords
-    if query and keys:
-        final = combineDicts(rows, rows2)
-    # return items that match word
-    elif query:
-        final = rows2
-    # return items that match keywords
-    elif keys:
-        final = rows
-    # no query, no keys
-    else:
-        final = db.execute("SELECT * FROM content WHERE canRead = 'True'")
-    # return items
-    return [{"title": item["title"], "content": item["content"], "post_id": item["id"], "uid": item["user_id"], "username": item["username"]} for item in final]
+# adds a course to the courses database
+def addCourse(ID, name, abv, description, profID, isSeminar, dept, credType, numCreds=4, qScore=0):
+    # this must be updated if column order or contents changes
+    crs_db.execute("INSERT INTO Courses VALUES (:ID, :name, :abv, :description, :profID, :isSem, :dept, :cred, :numC, :q", ID = ID, name = name, abv = abv, description = description, profID = profID, isSem = isSeminar, dept = dept, cred = credType, numC = numCreds, q = qScore)
+
+# deletes the course matching ID
+def deleteCourse(ID):
+    crs_db.execute("DELETE * FROM Courses WHERE ID=:ID", ID=ID)
+
+# returns the list of courses a student has designated as active
+def activeCourses(student_id):
+    # get ids of active courses as a dumped json string
+    courseIDs = std_db.execute("SELECT Courses FROM Student WHERE ID=:student_id", student_id = student_id)
+    # load dumped string into list of integers
+    idList = json.loads(courseIDs)
+    # prepare list for SQL query
+    ids = '(' + ','.join(map(str, idList)) + ')'
+    # return the list of courses which are in the student's active list
+    return crs_db.execute("SELECT * FROM Courses WHERE ID in :idList", idList = ids)
+
+# returns the course whose ID matches cid
+def lookupCourse(cid):
+    return crs_db.execute("SELECT * FROM Courses WHERE ID=:id", id=cid)
+
+# returns the CoS currently selected by the student
+def activeCOS(student_id):
+    # get identifier of student's CoS as a dumped json string
+    # json string allows for one or more concentrations to be selected
+    cosIDs = json.loads(std_db.execute("SELECT Conc FROM Student WHERE ID=:student_id", student_id = student_id))
+    # get secondary identifier
+    sndID = std_db.execute("SELECT Snd FROM Student WHERE ID=:student_id", student_id = student_id)
+    # get language identifier
+    lngID = std_db.execute("SELECT Lng FROM Student WHERE ID=:student_id", student_id = student_id)
+
+    # prepare IDs for SQL query
+    cosids = '(' + ','.join(map(str, cosIDs)) + ')'
+
+    COS = COS_db.execute("SELECT * FROM CoursesOfStudy WHERE ID in :cos", cos = cosids)
+
+    SND = snd_db.execute("SELECT * FROM Secondaries WHERE ID=:sndID", sndID = sndID[0])
+
+    LNG = lng_db.execute("SELECT * FROM Languages WHERE ID=:lngID", lngID = lngID[0])
+
+    # return data as a dictionary for easy access
+    return {"COS" : COS, "SND" : SND, "LNG" : LNG}
+
+# sets the student's COS, SND, and LNG based on params
+# if None, then no change. Must be "NONE" to remove
+def setCOS(student_id, COS_ID=None, SND_ID=None, LNG_ID=None):
+    if COS_ID != None:
+        std_db.execute("UPDATE Student SET COS=:COS_ID WHERE ID=:student_id", COS_ID = COS_ID, student_id = student_id)
+    elif SND_ID != None:
+        std_db.execute("UPDATE Student SET SND=:SND_ID WHERE ID=:student_id", SND_ID = SND_ID, student_id = student_id)
+    elif LNG_ID != None:
+        std_db.execute("UPDATE Student SET LNG=:LNG_ID WHERE ID=:student_id", LNG_ID = LNG_ID, student_id = student_id)
+
+# adds a course to a student's active roster
+def activateCourse(ID, S_ID):
+    # get ids of active courses as a dumped json string
+    courseIDs = std_db.execute("SELECT Courses FROM Student WHERE ID=:student_id", student_id = student_id)
+    # load dumped string into list of integers
+    current = json.loads(courseIDs)
+    new = json.dumps(current.append(ID))
+    std_db.execute("UPDATE Student SET Courses=:new WHERE ID=:S_ID", new = new, S_ID = S_ID)
+
+# removes a course from a student's active roster
+def deactivateCourse(ID, S_ID):
+    # get ids of active courses as a dumped json string
+    courseIDs = std_db.execute("SELECT Courses FROM Student WHERE ID=:student_id", student_id = student_id)
+    # load dumped string into list of integers
+    current = json.loads(courseIDs)
+    new = json.dumps(current.remove(ID))
+    std_db.execute("UPDATE Student SET Courses=:new WHERE ID=:S_ID", new = new, S_ID = S_ID)
+
+# sets a course's professor
+def setProf(ID, P_ID):
+    # can use this to see which professors teach which courses without maintaining a separate list
+    # for each prof, run SELECT * FROM Courses WHERE Professor=this.P_ID
+    crs_db.execute("UPDATE Courses SET Professor=:P_ID WHERE ID=:ID", P_ID = P_ID, ID = ID)
+
+# returns the data of the professor who teaches this course
+def getProf(ID):
+    return crs_db.execute("SELECT Professor FROM Courses WHERE ID=:ID", ID = ID)
+
+# returns the professor who matches P_ID
+def lookupProf(P_ID):
+    return prof_db.execute("SELECT * FROM Professors WHERE ID=:P_ID", P_ID = P_ID)
 
 def apology(top="", bottom=""):
     """Renders message as an apology to user."""
@@ -95,16 +153,3 @@ def escape(s):
             ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
             s = s.replace(old, new)
         return s
-
-# admin helper methods
-def delete(uname):
-    # delete user
-    db.execute("DELETE FROM users WHERE username = :name", name = uname)
-
-def changeAdmin(b, uname):
-    # if b is true, box was checked
-    if b:
-        db.execute("UPDATE users SET admin = 'True' WHERE username = :name", name = uname)
-    # if b is false, box was not checked
-    else:
-        db.execute("UPDATE users SET admin = 'False' WHERE username = :name", name = uname)
