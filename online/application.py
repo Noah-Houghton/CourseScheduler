@@ -29,16 +29,11 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-crs_db = sqlite3.connect("courses.db")
-prof_db = sqlite3.connect("professors.db")
-COS_db = sqlite3.connect("concentrations.db")
-# active courses are stored as a jsonified list of course ids which must be looked up in crs_db
-std_db = sqlite3.connect("students.db")
-
 @app.route("/", methods = ["GET", "POST"])
-@login_required
+# @login_required
 def home():
     """Home page, displays current courseload and requirements"""
-    crs_rows = crs_db.execute("SELECT * WHERE cid in :active", active = usr_db.execute("SELECT cid FROM active"))
-    COS_rows = COS_db.execute("SELECT * WHERE id = :userCOS", userCOS = usr_db.execute("SELECT COS WHERE active = True"))
+    session["user_id"] = 1
+    crses = activeCourses(session["user_id"])
+    COS = activeCOS(session["user_id"])
     return render_template("home.html", crs_data = crs_rows, COS_data = COS_rows)
