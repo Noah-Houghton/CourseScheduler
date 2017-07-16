@@ -23,54 +23,13 @@
             #websiteSlogan{
                 font-size: 5.4em;
             }
-            /* Carousel Styling */
-            .slide1{
-                background-image: url('http://media.salon.com/2014/01/great_gatsby-1280x750.jpg');
-                height: 650px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-
-            }
-            .slide2{
-                background-image: url('https://s-media-cache-ak0.pinimg.com/564x/2a/31/40/2a31408b02f2ce56c8de517f0e2bdc5a.jpg');
-                height: 650px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-            }
-            .slide3{
-                background-image: url('http://vignette1.wikia.nocookie.net/spongebob/images/8/87/F.U.N..jpg/revision/latest?cb=20121029010153');
-                height: 650px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-            }
-            .slide4{
-                background-image: url('http://www.pxleyes.com/images/contests/pottery/fullsize/---------------------------------------------4d586116a2fea_hires.jpg');
-                height: 650px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-            }
-            .slide5{
-                background-image: url('http://magazine.ucla.edu/depts/lifesigns/lifesignsbooks-toppage.jpg');
-                height: 650px;
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: cover;
-            }
-            .carousel-caption h1{
-                font-size: 5.4em;
-                font-family: 'Pacifico', cursive;
-                padding-bottom: .4em;
-                color: #ffffff;
-            }
-            .carousel-caption p{
-                font-size: 2em;
-                color: #ffffff;
-            }
         </style>
         {% endblock %}
 {% block main %}
+{% for course in crs_data%}
+    {{course}}
+{% endfor %}
+{{COS_data["COS"]}}
+{{COS_data["SND"]}}
+{{COS_data["LNG"]}}
 {% endblock %}

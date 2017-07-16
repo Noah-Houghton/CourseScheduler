@@ -33,15 +33,33 @@ Session(app)
 # @login_required
 def home():
     """Home page, displays current courseload and requirements"""
+    # for pre-user debugging
     session["user_id"] = 1
     print(session["user_id"])
+    # end debug script
     crses = activeCourses(session["user_id"])
     COS = activeCOS(session["user_id"])
     return render_template("home.html", crs_data = crses, COS_data = COS)
 
 @app.route("/search", methods = ["GET", "POST"])
 def search():
-    return render_template("search.hmtl")
+    return render_template("search.html")
+
+# extracts entries based on user's entry
+@app.route("/doSearch", methods=["GET"])
+@login_required
+def doSearch():
+    """Process request from search.js and jsonify it"""
+    if request.method == "GET":
+        # seeks query entry from HTML
+        q = request.args.get("q")
+        # figure out which types should be included in search
+        types = request.args.get("types")
+        rows = search(q, types)
+        cutoff = 200
+        # returns object
+        return jsonify(rows[:cutoff])
+        
 
 @app.route("/account", methods = ["GET", "POST"])
 def account():

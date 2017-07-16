@@ -11,13 +11,14 @@
 
 {% block main %}
 
-<form action="{{ url_for('search') }}" id="execute">
+<form action="{{ url_for('doSearch') }}" id="execute">
     <fieldset>
         <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" id="q" placeholder="Search content" type="text"/>
+            <input autocomplete="off" autofocus class="form-control" id="q" placeholder="Search" type="text"/>
         </div>
         <div class="form-group">
-            <input autocomplete="off" class="form-control" id="k" placeholder="Separate keywords with ';'" type="text"/>
+            <input type="checkbox" name="type" value="prof">Include Professors<br>
+            <input type="checkbox" name="type" value="COS">Include Courses of Study<br>
         </div>
         <button id="searchSubmit">Search</button>
     </fieldset>

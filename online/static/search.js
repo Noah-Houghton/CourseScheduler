@@ -18,7 +18,7 @@ $(function()
             k: keywords
         };
         
-        $.getJSON(Flask.url_for("searching"), parameters)
+        $.getJSON(Flask.url_for("doSearch"), parameters)
         .done(function(data) {
             // build display of results of search
             var plural = "";
