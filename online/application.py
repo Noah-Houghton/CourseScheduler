@@ -37,4 +37,24 @@ def home():
     print(session["user_id"])
     crses = activeCourses(session["user_id"])
     COS = activeCOS(session["user_id"])
-    return render_template("home.html", crs_data = crs_rows, COS_data = COS_rows)
+    return render_template("home.html", crs_data = crses, COS_data = COS)
+
+@app.route("/search", methods = ["GET", "POST"])
+def search():
+    return render_template("search.hmtl")
+
+@app.route("/account", methods = ["GET", "POST"])
+def account():
+    return render_template("account.html")
+
+@app.route("/register", methods = ["GET", "POST"])
+def register():
+    return render_template("register.html")
+
+@app.route("/login", methods = ["GET", "POST"])
+def login():
+    return render_template("login.html")
+
+@app.route("/logout", methods = ["GET", "POST"])
+def logout():
+    return render_template("logout.html")

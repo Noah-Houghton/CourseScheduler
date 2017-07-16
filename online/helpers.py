@@ -32,14 +32,17 @@ def deleteCourse(ID):
 
 # returns the list of courses a student has designated as active
 def activeCourses(student_id):
-    # get ids of active courses as a dumped json string
-    courseIDs = usr_c.execute("SELECT Courses FROM Students WHERE ID=?", student_id)
-    # load dumped string into list of integers
-    idList = json.loads(courseIDs)
-    # prepare list for SQL query
-    ids = '(' + ','.join(map(str, idList)) + ')'
-    # return the list of courses which are in the student's active list
-    return crs_c.execute("SELECT * FROM Courses WHERE ID in :idList", idList = ids)
+    try:
+        # get ids of active courses as a dumped json string
+        courseIDs = usr_c.execute("SELECT Courses FROM Students WHERE ID=?", (student_id,))
+        # load dumped string into list of integers
+        idList = json.loads(courseIDs)
+        # prepare list for SQL query
+        ids = '(' + ','.join(map(str, idList)) + ')'
+        # return the list of courses which are in the student's active list
+        return crs_c.execute("SELECT * FROM Courses WHERE ID in ?", (ids,))
+    except:
+        return []
 
 # returns the course whose ID matches cid
 def lookupCourse(cid):
@@ -47,25 +50,28 @@ def lookupCourse(cid):
 
 # returns the CoS currently selected by the student
 def activeCOS(student_id):
-    # get identifier of student's CoS as a dumped json string
-    # json string allows for one or more concentrations to be selected
-    cosIDs = json.loads(usr_c.execute("SELECT Conc FROM Students WHERE ID=:student_id", student_id = student_id))
-    # get secondary identifier
-    sndID = usr_c.execute("SELECT Snd FROM Students WHERE ID=:student_id", student_id = student_id)
-    # get language identifier
-    lngID = usr_c.execute("SELECT Lng FROM Students WHERE ID=:student_id", student_id = student_id)
+    try:
+        # get identifier of student's CoS as a dumped json string
+        # json string allows for one or more concentrations to be selected
+        cosIDs = json.loads(usr_c.execute("SELECT Conc FROM Students WHERE ID=?", (student_id,)))
+        # get secondary identifier
+        sndID = usr_c.execute("SELECT Snd FROM Students WHERE ID=?", (student_id,))
+        # get language identifier
+        lngID = usr_c.execute("SELECT Lng FROM Students WHERE ID=?", (student_id,))
 
-    # prepare IDs for SQL query
-    cosids = '(' + ','.join(map(str, cosIDs)) + ')'
+        # prepare IDs for SQL query
+        cosids = '(' + ','.join(map(str, cosIDs)) + ')'
 
-    COS = COS_c.execute("SELECT * FROM CoursesOfStudy WHERE ID in :cos", cos = cosids)
+        COS = COS_c.execute("SELECT * FROM CoursesOfStudy WHERE ID in ?", (cosids,))
 
-    SND = snd_c.execute("SELECT * FROM Secondaries WHERE ID=:sndID", sndID = sndID[0])
+        SND = snd_c.execute("SELECT * FROM Secondaries WHERE ID=?", (sndID[0],))
 
-    LNG = lng_c.execute("SELECT * FROM Languages WHERE ID=:lngID", lngID = lngID[0])
+        LNG = lng_c.execute("SELECT * FROM Languages WHERE ID=:lngID", (lngID[0],))
 
-    # return data as a dictionary for easy access
-    return {"COS" : COS, "SND" : SND, "LNG" : LNG}
+        # return data as a dictionary for easy access
+        return {"COS" : COS, "SND" : SND, "LNG" : LNG}
+    except:
+        return {"COS" : [], "SND" : [], "LNG" : []}
 
 # sets the student's COS, SND, and LNG based on params
 # if None, then no change. Must be "NONE" to remove

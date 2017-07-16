@@ -47,11 +47,7 @@
                         {% if session.admin == 'True' %}
                             <ul class="nav navbar-nav">
                                 <li><a href="{{ url_for('search') }}">Search</a></li>
-                                <li><a href="{{ url_for('submit') }}">Submit</a></li>
-                                <li><a href="{{ url_for('review') }}">Review</a></li>
                                 <li><a href="{{ url_for('account') }}">Manage Account</a></li>
-                                <li><a href="{{ url_for('tools') }}">Admin Tools</a></li>
-                                <li><a href="{{ url_for('myposts') }}">My Posts</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
@@ -59,9 +55,7 @@
                         {% elif session.user_id %}
                             <ul class="nav navbar-nav">
                                 <li><a href="{{ url_for('search') }}">Search</a></li>
-                                <li><a href="{{ url_for('submit') }}">Submit</a></li>
                                 <li><a href="{{ url_for('account') }}">Manage Account</a></li>
-                                <li><a href="{{ url_for('myposts') }}">My Posts</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="{{ url_for('logout') }}">Log Out</a></li>
