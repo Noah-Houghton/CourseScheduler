@@ -34,6 +34,7 @@ Session(app)
 def home():
     """Home page, displays current courseload and requirements"""
     session["user_id"] = 1
+    print(session["user_id"])
     crses = activeCourses(session["user_id"])
     COS = activeCOS(session["user_id"])
     return render_template("home.html", crs_data = crs_rows, COS_data = COS_rows)
