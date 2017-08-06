@@ -29,17 +29,24 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-@app.route("/", methods = ["GET", "POST"])
-# @login_required
+@app.route("/", methods=["GET"])
+def root():
+    """Redirect a user to the homepage"""
+    if request.method == "GET":
+        # direct user to home page
+        return redirect(url_for("home"))
+
+@app.route("/home", methods = ["GET", "POST"])
+@login_required
 def home():
-    """Home page, displays current courseload and requirements"""
-    # for pre-user debugging
-    session["user_id"] = 1
-    print(session["user_id"])
-    # end debug script
-    crses = activeCourses(session["user_id"])
-    COS = activeCOS(session["user_id"])
-    return render_template("home.html", crs_data = crses, COS_data = COS)
+    if request.method == "GET":
+        """Home page, displays current courseload and requirements"""
+        # for pre-user implementation debugging
+        session["user_id"] = 1
+        # end debug script
+        crses = activeCourses(session["user_id"])
+        COS = activeCOS(session["user_id"])
+        return render_template("home.html", crs_data = crses, COS_data = COS)
 
 @app.route("/search", methods = ["GET", "POST"])
 def search():
@@ -59,7 +66,6 @@ def doSearch():
         cutoff = 200
         # returns object
         return jsonify(rows[:cutoff])
-        
 
 @app.route("/account", methods = ["GET", "POST"])
 def account():
@@ -67,11 +73,46 @@ def account():
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        db = sqlite3.connect("users.db")
+        usr = request.form.get("username")
+        print(usr)
+        pswd = request.form.get("password")
+        print(pswd)
+        pswd_hash = pwd_context.encrypt(pswd)
+        try:
+            db.execute("INSERT INTO Users (username, password) Values (?, ?)", (usr, pswd_hash))
+            db.commit()
+            db.close()
+            return redirect(url_for("home"))
+        except:
+            return apology("Could not register user. Please contact support.")
 
 @app.route("/login", methods = ["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == 'GET':
+        return render_template("login.html")
+    else:
+        db = sqlite3.connect("users.db")
+        session.clear()
+        # look up account in database
+        # get entered information from HTML form
+        name = request.form.get("username")
+        rows = db.execute("SELECT * FROM Users WHERE username=?", (name,))
+        print(name)
+        try:
+            passw = request.form.get("password")
+            print(passw)
+            if not pwd_context.verify(passw, rows[0]["password"]):
+                raise Exception
+            session[user_id] = rows[0]["ID"]
+            session[user_type] = rows[0]["usr_type"]
+            # user is logged in, return them to home page
+            return redirect(url_for("home"))
+        except:
+            return apology("invalid username or password")
 
 @app.route("/logout", methods = ["GET", "POST"])
 def logout():

@@ -41,7 +41,7 @@ def deleteCourse(ID):
 def activeCourses(student_id):
     try:
         # get ids of active courses as a dumped json string
-        courseIDs = usr_c.execute("SELECT Courses FROM Students WHERE ID=?", (student_id,))
+        courseIDs = usr_c.execute("SELECT Courses FROM Users WHERE ID=?", (student_id,))
         # load dumped string into list of integers
         idList = json.loads(courseIDs)
         # prepare list for SQL query
@@ -60,11 +60,11 @@ def activeCOS(student_id):
     try:
         # get identifier of student's CoS as a dumped json string
         # json string allows for one or more concentrations to be selected
-        cosIDs = json.loads(usr_c.execute("SELECT Conc FROM Students WHERE ID=?", (student_id,)))
+        cosIDs = json.loads(usr_c.execute("SELECT Conc FROM Users WHERE ID=?", (student_id,)))
         # get secondary identifier
-        sndID = usr_c.execute("SELECT Snd FROM Students WHERE ID=?", (student_id,))
+        sndID = usr_c.execute("SELECT Snd FROM Users WHERE ID=?", (student_id,))
         # get language identifier
-        lngID = usr_c.execute("SELECT Lng FROM Students WHERE ID=?", (student_id,))
+        lngID = usr_c.execute("SELECT Lng FROM Users WHERE ID=?", (student_id,))
 
         # prepare IDs for SQL query
         cosids = '(' + ','.join(map(str, cosIDs)) + ')'
@@ -84,29 +84,29 @@ def activeCOS(student_id):
 # if None, then no change. Must be "NONE" to remove
 def setCOS(student_id, COS_ID=None, SND_ID=None, LNG_ID=None):
     if COS_ID != None:
-        usr_c.execute("UPDATE Students SET COS=? WHERE ID=?", (COS_ID, student_id))
+        usr_c.execute("UPDATE Users SET COS=? WHERE ID=?", (COS_ID, student_id))
     elif SND_ID != None:
-        usr_c.execute("UPDATE Students SET SND=? WHERE ID=?", (SND_ID, student_id))
+        usr_c.execute("UPDATE Users SET SND=? WHERE ID=?", (SND_ID, student_id))
     elif LNG_ID != None:
-        usr_c.execute("UPDATE Students SET LNG=? WHERE ID=?", (LNG_ID, student_id))
+        usr_c.execute("UPDATE Users SET LNG=? WHERE ID=?", (LNG_ID, student_id))
 
 # adds a course to a student's active roster
 def activateCourse(ID, S_ID):
     # get ids of active courses as a dumped json string
-    courseIDs = usr_c.execute("SELECT Courses FROM Students WHERE ID=?", (student_id,))
+    courseIDs = usr_c.execute("SELECT Courses FROM Users WHERE ID=?", (student_id,))
     # load dumped string into list of integers
     current = json.loads(courseIDs)
     new = json.dumps(current.append(ID))
-    usr_c.execute("UPDATE Students SET Courses=? WHERE ID=?", (new, S_ID))
+    usr_c.execute("UPDATE Users SET Courses=? WHERE ID=?", (new, S_ID))
 
 # removes a course from a student's active roster
 def deactivateCourse(ID, S_ID):
     # get ids of active courses as a dumped json string
-    courseIDs = usr_c.execute("SELECT Courses FROM Students WHERE ID=?", (student_id,))
+    courseIDs = usr_c.execute("SELECT Courses FROM Users WHERE ID=?", (student_id,))
     # load dumped string into list of integers
     current = json.loads(courseIDs)
     new = json.dumps(current.remove(ID))
-    usr_c.execute("UPDATE Students SET Courses=? WHERE ID=?", (new, S_ID))
+    usr_c.execute("UPDATE Users SET Courses=? WHERE ID=?", (new, S_ID))
 
 # sets a course's professor
 def setProf(ID, P_ID):
